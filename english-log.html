@@ -239,7 +239,10 @@ h1{
   padding:20px 14px; box-sizing:border-box;
 }
 .branch-nav .branch-group{margin-bottom:18px;}
-.branch-nav .branch-title{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--nav-text);margin-bottom:8px;}
+.branch-nav .branch-title{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--nav-text);margin-bottom:8px;cursor:pointer;user-select:none;}
+.branch-nav .branch-title .caret{margin-left:auto;font-size:10px;color:var(--nav-text-dim);transition:transform .15s ease;}
+.branch-nav .branch-group.collapsed .branch-title .caret{transform:rotate(-90deg);}
+.branch-nav .branch-group.collapsed .branch-items{display:none;}
 .branch-nav .branch-items{list-style:none;margin:0;padding:0;border-left:1px solid var(--nav-border);margin-left:6px;}
 .branch-nav .branch-items li{position:relative;padding:5px 0 5px 16px;}
 .branch-nav .branch-items li::before{content:"";position:absolute;left:-1px;top:14px;width:12px;height:1px;background:var(--nav-border);}
@@ -253,6 +256,8 @@ h1{
 @media (max-width:760px){
   .branch-nav{border-right:none;border-bottom:0.5px solid var(--nav-border);padding:14px;position:static;}
   .branch-nav .branch-group{margin-bottom:10px;}
+  .branch-nav .branch-group.collapsed .branch-items{display:flex;}
+  .branch-nav .branch-title .caret{display:none;}
   .branch-nav .branch-items{display:flex;flex-wrap:wrap;gap:4px;border-left:none;margin-left:0;}
   .branch-nav .branch-items li{padding:0;}
   .branch-nav .branch-items li::before{display:none;}
@@ -264,20 +269,28 @@ h1{
 <body>
 <nav class="branch-nav">
   <div class="branch-group">
-    <div class="branch-title"><span class="icon">📁</span>機器人學習主線</div>
+    <div class="branch-title"><span class="icon">📁</span>機器人學習主線<span class="caret">▾</span></div>
     <ul class="branch-items">
       <li><a href="overview.html">四年計畫總覽</a></li>
       <li><a href="index.html">週進度追蹤器</a></li>
     </ul>
   </div>
   <div class="branch-group">
-    <div class="branch-title"><span class="icon">📁</span>英文學習支線</div>
+    <div class="branch-title"><span class="icon">📁</span>英文學習支線<span class="caret">▾</span></div>
     <ul class="branch-items">
       <li><a href="english-overview.html">大綱總覽</a></li>
       <li><a href="english-log.html" class="current">24週日誌</a></li>
     </ul>
   </div>
 </nav>
+<script>
+document.querySelectorAll('.branch-nav .branch-title').forEach(function(t){
+  t.addEventListener('click', function(){
+    t.closest('.branch-group').classList.toggle('collapsed');
+  });
+});
+</script>
+
 
 
 <div class="header">
