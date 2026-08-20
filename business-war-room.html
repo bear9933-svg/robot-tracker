@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機器人整合創業｜四年行動作戰室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F7FC;
+  --bg-grid: rgba(15,168,149,0.06);
+  --panel:#FFFFFF;
+  --panel-2:#FFFFFFcc;
+  --panel-solid:#FFFFFFf2;
+  --card:#FFFFFF;
+  --border:#DFE6F2;
+  --border-soft:#EBF0F9;
+  --text:#141B27;
+  --text-dim:#374357;
+  --text-mute:#697A90;
+  --accent:#0FA895;
+  --accent-bright:#17D9BE;
+  --accent-dim:#0fa8951a;
+  --accent-border:#B9EFE6;
+  --accent-ink:#FFFFFF;
+  --amber:#E07C0E;
+  --amber-bright:#FFA83D;
+  --amber-dim:#e07c0e1c;
+  --amber-border:#FBDDB1;
+  --red:#E1435C;
+  --red-bright:#FF6B7D;
+  --red-dim:#e1435c1a;
+  --red-border:#F9C7CE;
+  --violet:#7C4FE0;
+  --violet-bright:#A47CF0;
+  --violet-dim:#7c4fe01c;
+  --violet-border:#DDCCF7;
+  --green:#20A863;
+  --green-bright:#33D17E;
+  --green-dim:#20a8631c;
+  --green-border:#B7EDCD;
+  --radius:14px;
+  --radius-sm:9px;
+  --font-display:'Space Grotesk', 'Noto Sans TC', sans-serif;
+  --font-body:'Noto Sans TC', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+  --shadow-card: 0 1px 2px rgba(20,30,60,0.04), 0 6px 16px -6px rgba(20,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    linear-gradient(180deg, rgba(15,168,149,0.07), transparent 320px),
+    repeating-linear-gradient(0deg, var(--bg-grid) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, var(--bg-grid) 0 1px, transparent 1px 40px),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-bright); color:#fff;}
+a{color:inherit;}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#CBD5E5; border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:#AFBEd6;}
+
+#app{display:flex; min-height:100vh;}
+
+/* ---------- Sidebar ---------- */
+#sidebar{
+  width:288px; flex:none; background:var(--panel);
+  border-right:1px solid var(--border-soft);
+  height:100vh; position:sticky; top:0; overflow-y:auto;
+  padding:20px 14px 40px;
+  z-index:20;
+}
+.brand{
+  display:flex; align-items:flex-start; gap:10px;
+  padding:4px 8px 18px;
+  border-bottom:1px solid var(--border-soft);
+  margin-bottom:16px;
+}
+.brand .mark{
+  width:38px; height:38px; border-radius:10px;
+  background:linear-gradient(145deg, var(--accent-bright), var(--accent));
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px; flex:none; box-shadow:0 0 0 1px rgba(255,255,255,0.6), 0 6px 16px -4px rgba(15,168,149,0.45);
+}
+.brand h1{
+  font-family:var(--font-display); font-size:15px; font-weight:700;
+  margin:2px 0 3px; letter-spacing:.2px; color:var(--text);
+}
+.brand p{margin:0; font-size:11.5px; color:var(--text-mute); font-family:var(--font-mono); letter-spacing:.3px;}
+
+.search-wrap{position:relative; margin-bottom:18px;}
+#searchInput{
+  width:100%; background:var(--card); border:1px solid var(--border);
+  color:var(--text); border-radius:var(--radius-sm); padding:10px 34px 10px 12px;
+  font-family:var(--font-body); font-size:13.5px; outline:none;
+  transition:border-color .15s;
+}
+#searchInput:focus{border-color:var(--accent);}
+.search-wrap::after{
+  content:'⌕'; position:absolute; right:11px; top:50%; transform:translateY(-50%) scaleX(1.3);
+  color:var(--text-mute); font-size:16px; pointer-events:none;
+}
+#searchResults{
+  position:absolute; top:calc(100% + 6px); left:0; right:0;
+  background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius-sm);
+  box-shadow:0 16px 32px -10px rgba(20,30,60,0.18); max-height:340px; overflow-y:auto;
+  z-index:50; display:none;
+}
+#searchResults.show{display:block;}
+.sr-item{
+  padding:9px 12px; cursor:pointer; border-bottom:1px solid var(--border-soft);
+  display:flex; flex-direction:column; gap:2px;
+}
+.sr-item:last-child{border-bottom:none;}
+.sr-item:hover{background:var(--card);}
+.sr-item .sr-title{font-size:13px; font-weight:600; color:var(--text); display:flex; gap:6px; align-items:center;}
+.sr-item .sr-snip{font-size:11.5px; color:var(--text-mute); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.sr-item mark{background:var(--accent-dim); color:var(--accent); border-radius:3px; padding:0 2px;}
+.sr-empty{padding:14px 12px; font-size:12.5px; color:var(--text-mute); text-align:center;}
+
+.cat-group{margin-bottom:4px;}
+.cat-head{
+  display:flex; align-items:center; gap:8px; padding:9px 8px;
+  cursor:pointer; border-radius:8px; user-select:none;
+}
+.cat-head:hover{background:var(--card);}
+.cat-head .ci{font-size:14px;}
+.cat-head .ct{
+  font-family:var(--font-display); font-size:11.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.09em; color:var(--text-dim); flex:1;
+}
+.cat-head .cx{font-size:10px; color:var(--text-mute); transition:transform .2s;}
+.cat-group.collapsed .cx{transform:rotate(-90deg);}
+.cat-group.collapsed .cat-list{display:none;}
+.cat-list{padding:2px 0 10px 6px; border-left:1px solid var(--border-soft); margin-left:19px; display:flex; flex-direction:column; gap:1px;}
+.nav-item{
+  display:flex; align-items:center; gap:8px;
+  padding:7px 10px; border-radius:8px; cursor:pointer;
+  font-size:13px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  border:1px solid transparent;
+}
+.nav-item .ni{font-size:13px; flex:none;}
+.nav-item:hover{background:var(--card); color:var(--text);}
+.nav-item.active{background:var(--accent-dim); color:var(--accent); border-color:var(--accent-border); font-weight:600;}
+
+/* ---------- Main ---------- */
+#main{flex:1; min-width:0; display:flex; flex-direction:column; height:100vh; overflow:hidden;}
+#topbar{
+  display:flex; align-items:flex-end; gap:8px; padding:10px 16px 0;
+  background:var(--panel-solid); backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border-soft); flex:none;
+}
+#tabbar{
+  display:flex; align-items:flex-end; gap:2px;
+  overflow-x:auto; flex:1; min-width:0;
+  scrollbar-width:thin;
+}
+#tabbar::-webkit-scrollbar{height:6px;}
+.tab{
+  display:flex; align-items:center; gap:7px; padding:9px 12px 10px;
+  background:var(--card); border:1px solid var(--border-soft); border-bottom:none;
+  border-radius:10px 10px 0 0; font-size:12.5px; color:var(--text-mute);
+  cursor:pointer; white-space:nowrap; flex:none; position:relative; top:1px;
+}
+.tab.active{background:var(--bg); color:var(--text); border-color:var(--border); font-weight:600;}
+.tab .ti{font-size:13px;}
+.tab .tx{
+  font-size:14px; color:var(--text-mute); line-height:1; padding:1px 3px; border-radius:5px;
+}
+.tab .tx:hover{background:var(--red-dim); color:var(--red);}
+#menuToggle{display:none;}
+
+#content{flex:1; overflow-y:auto; padding:28px 34px 90px;}
+#content::-webkit-scrollbar{width:10px;}
+.empty-state{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:70vh; color:var(--text-mute); text-align:center; gap:10px;
+}
+.empty-state .es-icon{font-size:40px; opacity:.5;}
+
+/* ---------- Page header ---------- */
+.page-head{margin-bottom:26px; padding-bottom:18px; border-bottom:1px solid var(--border-soft);}
+.page-eyebrow{
+  font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent);
+  text-transform:uppercase; letter-spacing:.12em; margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.page-title{
+  font-family:var(--font-display); font-size:24px; font-weight:700; margin:0 0 8px; color:var(--text);
+  letter-spacing:.1px;
+}
+.page-sub{font-size:13.5px; color:var(--text-dim); max-width:820px; margin:0;}
+
+/* ---------- Generic bits ---------- */
+.tag{
+  display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600;
+  padding:3px 9px; border-radius:100px; background:var(--card); color:var(--text-dim);
+  border:1px solid var(--border-soft); font-family:var(--font-body); white-space:nowrap;
+}
+.tag.accent{background:var(--accent-dim); color:var(--accent); border-color:var(--accent-border);}
+.tag.amber{background:var(--amber-dim); color:var(--amber); border-color:var(--amber-border);}
+.tag.red{background:var(--red-dim); color:var(--red); border-color:var(--red-border);}
+.tag.green{background:var(--green-dim); color:var(--green); border-color:var(--green-border);}
+.tag.violet{background:var(--violet-dim); color:var(--violet); border-color:var(--violet-border);}
+.tag.mono{font-family:var(--font-mono);}
+
+/* ---------- SVG icon system ---------- */
+svg.icon{
+  width:1em; height:1em; vertical-align:-0.16em; flex:none;
+  display:inline-block;
+}
+.ci svg.icon, .ni svg.icon, .ti svg.icon{ width:1.05em; height:1.05em; }
+.page-eyebrow svg.icon{ width:1.1em; height:1.1em; vertical-align:-0.18em; }
+.mark svg.icon{ width:20px; height:20px; color:#fff; }
+.es-icon svg.icon{ width:2.4em; height:2.4em; opacity:.55; }
+.badge-icon{ margin-right:5px; }
+.badge-icon.b-good{color:var(--green);}
+.badge-icon.b-warn{color:var(--amber);}
+.badge-icon.b-bad{color:var(--red);}
+.badge-icon.b-mute{color:var(--text-mute);}
+.icon-good{color:var(--green);}
+.icon-mute{color:var(--text-mute);}
+.pg-row .bought svg.icon{ width:1.15em; height:1.15em; }
+.tl-fit .fi svg.icon{ width:1.05em; height:1.05em; }
+.pin-group.warn .pg-group-title svg.icon{ margin-right:6px; color:var(--red); }
+
+.section-title{
+  font-family:var(--font-display); font-size:12.5px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.09em; color:var(--text); margin:34px 0 14px; display:flex; align-items:center; gap:9px;
+}
+.section-title::before{content:''; width:4px; height:15px; background:var(--accent); border-radius:2px; flex:none;}
+.section-title svg.icon{ width:1.05em; height:1.05em; color:var(--accent); }
+.section-title::after{content:''; flex:1; height:1px; background:var(--border-soft); order:99;}
+.section-title:first-child{margin-top:0;}
+
+.note-box{
+  background:var(--card); border:1px solid var(--border-soft); border-left:3px solid var(--accent);
+  border-radius:var(--radius-sm); padding:12px 15px; font-size:13px; color:var(--text-dim); margin:10px 0;
+}
+.note-box.amber{border-left-color:var(--amber);}
+.note-box.red{border-left-color:var(--red);}
+.note-box.violet{border-left-color:var(--violet);}
+.note-box b, .note-box strong{color:var(--text);}
+
+/* ===================== TIMELINE ===================== */
+.tl{position:relative; margin-left:6px; padding-left:26px; border-left:2px solid var(--border-soft);}
+.tl-item{position:relative; padding-bottom:26px;}
+.tl-item:last-child{padding-bottom:2px;}
+.tl-dot{
+  position:absolute; left:-33px; top:2px; width:14px; height:14px; border-radius:50%;
+  background:var(--bg); border:2.5px solid var(--accent); box-shadow:0 0 0 4px rgba(84,217,198,0.12);
+}
+.tl-item.now .tl-dot{background:var(--accent); box-shadow:0 0 0 5px rgba(84,217,198,0.28);}
+.tl-card{
+  background:var(--card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:16px 18px;
+}
+.tl-item.now .tl-card{border-color:var(--accent-border); box-shadow:0 0 0 3px var(--accent-dim);}
+.tl-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; align-items:center;}
+.tl-time{font-family:var(--font-mono); font-size:12px; color:var(--accent); font-weight:600;}
+.tl-topic{font-family:var(--font-display); font-size:16px; font-weight:700; margin:2px 0 8px; color:var(--text);}
+.tl-field{margin-top:8px; font-size:13px; color:var(--text-dim);}
+.tl-field b{
+  display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--text-mute); font-weight:700; margin-bottom:3px; font-family:var(--font-display);
+}
+.tl-fit{
+  margin-top:12px; padding-top:11px; border-top:1px dashed var(--border-soft);
+  font-size:12px; color:var(--violet); display:flex; gap:7px;
+}
+.tl-fit .fi{flex:none;}
+
+/* ===================== PRICE LIST ===================== */
+.price-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:12px;}
+.price-card{
+  background:var(--card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:14px 16px; display:flex; flex-direction:column; gap:8px;
+}
+.price-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+.price-name{font-weight:700; font-size:14px; color:var(--text); font-family:var(--font-display);}
+.price-cost{
+  font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--amber);
+  background:var(--amber-dim); padding:3px 9px; border-radius:100px; white-space:nowrap; flex:none;
+}
+.price-reason{font-size:12.5px; color:var(--text-dim); line-height:1.55;}
+.price-bottom{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:2px;}
+.price-timing{font-size:11.5px; color:var(--text-mute); font-family:var(--font-mono);}
+
+.pg-group{margin-bottom:22px;}
+.pg-group-title{
+  font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--text);
+  margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.pg-group-title .bar{width:4px; height:14px; background:var(--accent); border-radius:2px;}
+.pg-row{
+  display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:9px;
+  border:1px solid var(--border-soft); margin-bottom:6px; background:var(--card); font-size:13px;
+}
+.pg-row .num{font-family:var(--font-mono); color:var(--text-mute); font-size:11.5px; width:18px; flex:none;}
+.pg-row .nm{flex:1; min-width:120px; color:var(--text); font-weight:600;}
+.pg-row .kw{color:var(--text-mute); font-size:11.5px; font-family:var(--font-mono); flex:1; min-width:130px;}
+.pg-row .use{color:var(--text-dim); font-size:12px; flex:1; min-width:120px;}
+.pg-row .qty{color:var(--text-mute); font-size:12px; font-family:var(--font-mono); width:40px; flex:none;}
+.pg-row .price{color:var(--amber); font-weight:700; font-size:12.5px; font-family:var(--font-mono); width:70px; flex:none; text-align:right;}
+.pg-row .bought{width:22px; flex:none; text-align:center; font-size:14px;}
+.pg-total{
+  display:flex; justify-content:space-between; align-items:center; padding:12px 16px;
+  background:var(--accent-dim); border:1px solid var(--accent-border); border-radius:var(--radius-sm);
+  font-family:var(--font-display); font-weight:700; color:var(--accent); margin-top:6px;
+}
+.have-list{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0;}
+.have-chip{
+  display:flex; align-items:center; gap:6px; background:var(--green-dim); color:var(--green);
+  border:1px solid var(--green-border); padding:6px 12px; border-radius:100px; font-size:12.5px;
+}
+
+/* ===================== PINS ===================== */
+.pin-group{margin-bottom:20px;}
+.pin-group.warn .pg-group-title{color:var(--red);}
+.pin-group.warn .pg-group-title .bar{background:var(--red);}
+.pin-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+.pin-table th{
+  text-align:left; font-family:var(--font-display); font-size:10.5px; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--text-mute); padding:7px 10px; border-bottom:1px solid var(--border);
+}
+.pin-table td{padding:9px 10px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); vertical-align:top;}
+.pin-table tr:hover td{background:var(--card);}
+.pin-table .pinval{font-family:var(--font-mono); color:var(--accent); font-weight:600;}
+.pin-table .pinval.dim{color:var(--text-mute);}
+.pin-group.warn .pin-table td{color:var(--red);}
+.pin-group.warn .pinval{color:var(--red);}
+
+/* ===================== PROFILES ===================== */
+.kid-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:14px; margin-bottom:20px;}
+.kid-card{
+  background:var(--card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:18px; display:flex; flex-direction:column; gap:9px;
+}
+.kid-name{font-family:var(--font-display); font-size:16px; font-weight:700; color:var(--text); display:flex; justify-content:space-between; align-items:center;}
+.kid-age{font-family:var(--font-mono); font-size:11.5px; color:var(--text-mute); font-weight:400;}
+.kid-fit{font-size:12.5px; color:var(--text-dim); line-height:1.6;}
+.summary-list{display:flex; flex-direction:column; gap:8px; margin:12px 0;}
+.summary-item{
+  display:flex; gap:10px; font-size:13px; color:var(--text-dim); padding:10px 13px;
+  background:var(--card); border-radius:var(--radius-sm); border:1px solid var(--border-soft);
+}
+.summary-item .sb{color:var(--accent); flex:none;}
+
+/* ===================== LIFE / FORTUNE TIMELINE ===================== */
+.life-grid{display:grid; grid-template-columns:1fr; gap:8px;}
+.life-row{
+  display:grid; grid-template-columns:90px 110px 90px 1fr; gap:14px; align-items:center;
+  padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--border-soft); background:var(--card);
+}
+.life-row.current{border-color:var(--accent); background:var(--accent-dim);}
+.life-age{font-family:var(--font-mono); color:var(--text-mute); font-size:12px;}
+.life-stage{font-family:var(--font-display); font-weight:700; color:var(--text); font-size:14px;}
+.life-gods{font-size:11.5px; color:var(--violet); font-weight:600;}
+.life-theme{font-size:13px; color:var(--text-dim);}
+.stars{color:var(--amber); letter-spacing:1px; font-size:13px;}
+
+/* ===================== OVERVIEW ===================== */
+.year-block{margin-bottom:26px;}
+.year-tag{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:700;
+  font-size:13px; color:var(--accent); margin-bottom:12px;
+  padding:5px 13px; border:1px solid var(--accent-border); border-radius:100px; background:var(--accent-dim);
+}
+.road-grid{display:flex; flex-direction:column; gap:8px;}
+.road-row{
+  display:grid; grid-template-columns:34px 130px 1.4fr 1.6fr 1fr 90px; gap:14px; align-items:center;
+  padding:12px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-soft); background:var(--card);
+  font-size:12.5px;
+}
+.road-num{
+  width:26px; height:26px; border-radius:8px; background:var(--panel); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); color:var(--text-mute); font-size:11px;
+}
+.road-period{font-family:var(--font-mono); color:var(--text-mute); font-size:11.5px;}
+.road-topic{font-weight:700; color:var(--text); font-size:13.5px;}
+.road-skill{color:var(--text-dim);}
+.road-done{color:var(--text-dim);}
+.road-cost{font-family:var(--font-mono); color:var(--amber); text-align:right; font-weight:600;}
+
+.income-strip{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;}
+.income-card{
+  flex:none; width:170px; background:var(--card); border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:14px; display:flex; flex-direction:column; gap:5px;
+}
+.income-time{font-family:var(--font-mono); font-size:11px; color:var(--text-mute);}
+.income-goal{font-family:var(--font-display); font-size:19px; font-weight:700; color:var(--amber);}
+.income-model{font-size:11.5px; color:var(--text-dim);}
+.income-asset{font-size:11px; color:var(--accent); margin-top:4px; font-weight:700;}
+
+/* ===================== DUAL LIST ===================== */
+.dual-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+.list-card{background:var(--card); border:1px solid var(--border-soft); border-radius:var(--radius); padding:16px 18px;}
+.list-card h3{font-family:var(--font-display); font-size:13px; margin:0 0 12px; color:var(--text-dim);}
+.list-card ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:9px;}
+.list-card li{
+  font-size:13.5px; color:var(--text-dim); padding-left:22px; position:relative;
+}
+.list-card li::before{content:'▢'; position:absolute; left:0; color:var(--accent);}
+
+/* ===================== GENERIC (table/notes/dividers) ===================== */
+.gen-divider{
+  font-family:var(--font-display); font-weight:700; font-size:12.5px; color:var(--text);
+  margin:24px 0 12px; padding:8px 0 8px 12px; border-left:3px solid var(--accent);
+  background:linear-gradient(90deg, var(--card), transparent);
+}
+.gen-divider:first-child{margin-top:0;}
+.gen-note{
+  font-size:13px; color:var(--text-dim); background:var(--card); border:1px solid var(--border-soft);
+  border-radius:var(--radius-sm); padding:11px 15px; margin:8px 0; line-height:1.65;
+}
+.gen-note.bullet{border-left:3px solid var(--violet); padding-left:14px;}
+.gen-note.numbered{border-left:3px solid var(--accent);}
+.gen-table-wrap{overflow-x:auto; margin:10px 0 6px; border:1px solid var(--border-soft); border-radius:var(--radius);}
+table.gen-table{width:100%; border-collapse:collapse; font-size:12.8px; min-width:520px;}
+table.gen-table thead th{
+  position:sticky; top:0; background:#EFF7F5; text-align:left; font-family:var(--font-display);
+  font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent);
+  padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+}
+table.gen-table td{padding:10px 14px; border-bottom:1px solid var(--border-soft); color:var(--text-dim); vertical-align:top;}
+table.gen-table tbody tr:hover td{background:var(--card);}
+table.gen-table tbody tr.grp-start td{border-top:1px solid var(--border);}
+table.gen-table td:first-child{color:var(--text); font-weight:600;}
+.badge-icon{font-weight:700; margin-right:5px;}
+.badge-icon.b-good{color:var(--green);}
+.badge-icon.b-warn{color:var(--amber);}
+.badge-icon.b-bad{color:var(--red);}
+.badge-icon.b-mute{color:var(--text-mute);}
+.pill{display:inline-block; padding:2px 9px; border-radius:100px; font-size:11px; font-weight:700;}
+.pill.done{background:var(--green-dim); color:var(--green);}
+.pill.doing{background:var(--amber-dim); color:var(--amber);}
+.pill.todo{background:var(--panel); color:var(--text-mute); border:1px solid var(--border);}
+
+footer.site-footer{
+  margin-top:50px; padding-top:18px; border-top:1px solid var(--border-soft);
+  font-size:11.5px; color:var(--text-mute); text-align:center;
+}
+
+/* ---------- Elevation for cards on light background ---------- */
+.tl-card, .price-card, .kid-card, .income-card, .list-card, .note-box,
+.summary-item, .pg-row, .life-row, .gen-table-wrap, .road-row, .pg-total{
+  box-shadow: var(--shadow-card);
+}
+#sidebar{ box-shadow: 1px 0 0 var(--border-soft); }
+#tabbar, #topbar{ box-shadow: 0 1px 0 var(--border-soft); }
+.tab.active{ box-shadow: 0 -2px 8px -4px rgba(20,30,60,0.12); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width:900px){
+  #sidebar{
+    position:fixed; left:0; top:0; transform:translateX(-100%); transition:transform .25s;
+    box-shadow:20px 0 40px rgba(20,30,60,0.15); width:82vw; max-width:320px;
+  }
+  #sidebar.open{transform:translateX(0);}
+  #menuToggle{
+    display:flex; align-items:center; justify-content:center; width:36px; height:36px;
+    border-radius:9px; border:1px solid var(--border); background:var(--card); color:var(--text);
+    font-size:16px; cursor:pointer; flex:none; margin-right:10px;
+  }
+  #tabbar{padding:10px 10px 0;}
+  #content{padding:20px 16px 70px;}
+  .dual-grid{grid-template-columns:1fr;}
+  .road-row{grid-template-columns:1fr; row-gap:6px;}
+  .road-cost{text-align:left;}
+  .life-row{grid-template-columns:1fr; row-gap:4px;}
+  .pg-row{flex-wrap:wrap;}
+  #sidebarOverlay{
+    display:none; position:fixed; inset:0; background:rgba(20,30,60,0.35); z-index:19;
+  }
+  #sidebarOverlay.show{display:block;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="mark" id="brandMark"></div>
+      <div>
+        <h1>四年行動作戰室</h1>
+        <p>AI × 機器人整合創業計畫</p>
+      </div>
+    </div>
+    <a href="index.html" style="display:block;font-size:12px;color:inherit;opacity:.65;text-decoration:underline;margin:-4px 0 12px;">← 回到學習主線</a>
+    <div class="search-wrap">
+      <input id="searchInput" type="text" placeholder="搜尋所有資料表…" autocomplete="off">
+      <div id="searchResults"></div>
+    </div>
+    <nav id="navTree"></nav>
+  </aside>
+
+  <div id="main">
+    <div id="topbar">
+      <button id="menuToggle">☰</button>
+      <div id="tabbar"></div>
+    </div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<script>
+window.SITE_DATA = {"categoryOrder": ["總覽與目標", "行動時程", "硬體與環境", "課程規劃", "市場與商業", "家庭與命理"], "categoryIcon": {"總覽與目標": "target", "行動時程": "route", "硬體與環境": "wrench", "課程規劃": "book", "市場與商業": "briefcase", "家庭與命理": "users"}, "sheets": {"📋 總覽": {"category": "總覽與目標", "icon": "target", "render": "overview", "title": "機器人整合創業｜4年學習路線總覽", "subtitle": "目標：2028–2034創業黃金期｜最終目標：55歲前資產5000萬", "payload": {"roadmap": [{"num": 1, "period": "2026/05–06", "months": "第1–2月", "topic": "Python基礎", "skill": "變數/迴圈/函式/類別/JSON", "done": "AGV車隊監控系統（Python版）", "cost": "NT$0", "year": "第一年"}, {"num": 2, "period": "2026/07–08", "months": "第3–4月", "topic": "Linux + Git + C++", "skill": "Ubuntu/終端機/GitHub/C++類別", "done": "GitHub有公開作品集", "cost": "NT$0", "year": "第一年"}, {"num": 3, "period": "2026/09–10", "months": "第5–6月", "topic": "ESP32硬體入門", "skill": "MicroPython/GPIO/PWM/超音波", "done": "ESP32避障偵測器（含影片）", "cost": "NT$1,000", "year": "第一年"}, {"num": 4, "period": "2026/11–12", "months": "第7–8月", "topic": "ROS2入門", "skill": "Node/Topic/Publisher/RViz2", "done": "ROS2控制虛擬機器人", "cost": "NT$0", "year": "第一年"}, {"num": 5, "period": "2027/01–02", "months": "第9–10月", "topic": "Gazebo模擬", "skill": "虛擬環境/URDF/模擬導航", "done": "虛擬AGV自動導航到定點", "cost": "NT$0", "year": "第一年"}, {"num": 6, "period": "2027/03–04", "months": "第11–12月", "topic": "第一年整合專題", "skill": "ROS2+Arduino+ESP32整合", "done": "WiFi遙控避障小車（完整文件）", "cost": "NT$500", "year": "第一年"}, {"num": 7, "period": "2027/05–07", "months": "第13–15月", "topic": "OpenCV電腦視覺", "skill": "影像處理/YOLO物件辨識/ROS2整合", "done": "攝影機辨識物件→小車自動靠近", "cost": "NT$0", "year": "第二年"}, {"num": 8, "period": "2027/08–10", "months": "第16–18月", "topic": "MoveIt2手臂控制", "skill": "URDF/正逆向運動學/路徑規劃", "done": "手臂自動夾取指定顏色物件", "cost": "NT$2,000–15,000", "year": "第二年"}, {"num": 9, "period": "2027/11–12", "months": "第19–20月", "topic": "ROS2 Nav2導航", "skill": "SLAM建圖/AMCL定位/動態避障", "done": "未知環境自動建圖並導航", "cost": "NT$0", "year": "第二年"}, {"num": 10, "period": "2028/01–04", "months": "第21–24月", "topic": "Intel RealSense D435i", "skill": "深度影像/點雲/3D物件定位", "done": "手臂透過3D相機精確抓取工件", "cost": "NT$12,000", "year": "第二年"}, {"num": 11, "period": "2028/05–07", "months": "第25–27月", "topic": "工業通訊協議", "skill": "Modbus TCP/OPC UA/pymodbus", "done": "Python讀取PLC數據並控制設備", "cost": "NT$0", "year": "第三年"}, {"num": 12, "period": "2028/08–10", "months": "第28–30月", "topic": "EtherCAT伺服控制", "skill": "SOEM/多軸同步/位置速度扭矩", "done": "Python精確控制伺服馬達定位", "cost": "NT$0–5,000", "year": "第三年"}, {"num": 13, "period": "2028/11月–2029/01", "months": "第31–33月", "topic": "系統整合實戰", "skill": "視覺+手臂+AGV+PLC全整合", "done": "工廠級完整自動化系統Demo", "cost": "NT$0", "year": "第三年"}, {"num": 14, "period": "2029/02–04", "months": "第34–36月", "topic": "第一個客戶", "skill": "提案/報價/合約/專案管理", "done": "完成第一個付費工廠案子", "cost": "—", "year": "第四年"}, {"num": 15, "period": "2029/05–07", "months": "第37–39月", "topic": "商業化能力", "skill": "簡報/ROI計算/合約條款", "done": "能獨立提案並簽約", "cost": "—", "year": "第四年"}, {"num": 16, "period": "2029/08月–2030/04", "months": "第40–48月", "topic": "規模化", "skill": "招募/PM/技術總監角色", "done": "年收100萬，有第一位員工", "cost": "—", "year": "第四年"}], "income": [{"time": "2029年底", "age": "47歲", "goal": "100萬", "model": "接小案、工廠整合", "asset": "少量"}, {"time": "2030年底", "age": "48歲", "goal": "300萬", "model": "穩定客戶3個以上", "asset": "500萬"}, {"time": "2032年", "age": "50歲", "goal": "500萬+", "model": "規模化、有團隊", "asset": "1500萬"}, {"time": "2034年", "age": "52歲", "goal": "1000萬+", "model": "品牌化產品化", "asset": "3000萬"}, {"time": "2037年", "age": "55歲", "goal": "2000萬+", "model": "多客戶穩定合約", "asset": "5000萬"}]}}, "整年目標計劃方向": {"category": "總覽與目標", "icon": "listCheck", "render": "dual-list", "title": "整年目標計劃方向", "subtitle": "待辦事項與並行進度清單", "payload": {"listA": {"title": "技術／事業待辦清單", "items": ["1．維修知識庫 RAG", "2．Layout自動化", "3．早餐店網頁", "4．App的開發", "5．影片的基礎的剪片", "6．返修台與機器手臂協作", "7．3D模型的工具的開模使用"]}, "listB": {"title": "並行進度追蹤", "items": ["1．學習英文網頁進度", "2．運動與健康進度"]}}}, "行動時程表": {"category": "行動時程", "icon": "route", "render": "timeline", "title": "行動時程表", "subtitle": "四年行動時程主軸（技術＋維修診斷服務路線）", "payload": {"items": [{"time": "現在（2026/07，本月立即行動）", "phase": "癸丑大運・偏印 ・ (打底學習期)", "topic": "[新] 用既有BGA維修技能打開第一扇門", "task": "不用等技術學完才開始：主動聯繫FANUC／YASKAWA／ABB／台達等工業機器人台灣代理商或系統整合商，說明可提供板級（BGA）維修服務；同步準備一句話定位說法，開始累積工廠關係與信任", "deliverable": "完成至少1次代理商／系統整合商聯繫紀錄；整理一份「BGA可承接維修類型」簡介", "note": "來源：3份補充對話比對新增；市場現況＝台灣製造業大量使用FANUC/KUKA/Yaskawa等品牌，原廠板級維修據點少，中小廠有真實需求", "fit": "電控/機構診斷起點(金+火)－二女兒契合度較高，可搭配協作"}, {"time": "2026/07", "phase": "癸丑大運・偏印 ・ (打底學習期)", "topic": "伺服馬達／驅動器原理入門", "task": "研讀伺服馬達結構、編碼器種類、驅動器基本控制迴路(位置/速度/電流環)；對照過往修網通設備的訊號判讀邏輯做類比筆記", "deliverable": "整理一份「伺服馬達常見故障模式」筆記", "note": "可從和椿科技、台達電技術文件入手", "fit": "機械/伺服結構(金)－二女兒(辛金)本命契合度最高"}, {"time": "2026/08", "phase": "癸丑大運・偏印", "topic": "編碼器訊號與電流迴路 + Python複習", "task": "學習編碼器輸出訊號(增量式/絕對式)判讀方式；電流異常常見成因；同步複習/加強Python基礎語法", "deliverable": "寫一支模擬感測數據的Python小工具(讀取/繪圖)", "note": "AI工具(Cursor/ChatGPT)輔助寫程式、加速理解", "fit": "電流迴路(火)＋軟體(水)－電流部分大兒子/小女兒需留意忌神；Python軟體部分兩人皆合適"}, {"time": "2026/09", "phase": "癸丑大運・偏印", "topic": "Modbus TCP 協定入門", "task": "學習Modbus TCP通訊架構、暫存器讀寫邏輯；用pymodbus做一個模擬讀寫Demo", "deliverable": "完成一個可運行的Modbus讀寫demo", "note": "pymodbus + 本機模擬slave", "fit": "通訊協定/資料處理(水)－大兒子、小女兒皆合適(用神金水)"}, {"time": "2026/10", "phase": "癸丑大運・偏印", "topic": "EtherCAT基礎 + 感測器選型", "task": "了解EtherCAT主從架構與即時性特點；研究振動感測器(加速度計)、電流鉗規格與接線方式", "deliverable": "整理一份「感測器選型」筆記(含常見廠牌/規格)", "note": null, "fit": "EtherCAT(水)+感測器選型(金)－二女兒(金)、大兒子/小女兒(水)皆可分工"}, {"time": "2026/11", "phase": "癸丑大運・偏印", "topic": "振動／電流／溫度異常診斷案例", "task": "蒐集實際案例：齒輪磨損、軸承異常、驅動器過熱等訊號特徵；建立自己的異常判讀對照表", "deliverable": "完成「異常訊號特徵對照表」v1", "note": "可參考原廠白皮書、維保服務商案例分享", "fit": "故障診斷案例整理(綜合)－三人皆可參與資料整理，累積經驗不受命局限制"}, {"time": "2026/12", "phase": "癸丑大運・偏印", "topic": "上半年回顧 + 筆電採購定案", "task": "盤點7-11月學習成果與筆記；確認筆電規格(i7-13650HX / RTX4060)並下單，準備開發環境", "deliverable": "完成「2026上半年成果」整理文件；筆電到手", "note": null, "fit": "年度回顧/採購決策(綜合管理)－不涉及五行偏重，任一孩子皆可參與"}, {"time": "2027/01", "phase": "癸丑大運・偏印 ・ (硬底子深化期)", "topic": "開發環境建置", "task": "安裝CUDA、OpenCV、ROS2(建議Humble或當時LTS版)，設定好Python虛擬環境與VSCode", "deliverable": "本機ROS2 + OpenCV環境可正常運作", "note": null, "fit": "環境建置(軟體/水)－大兒子、小女兒契合"}, {"time": "2027/02", "phase": "癸丑大運・偏印", "topic": "OpenCV基礎與瑕疵偵測", "task": "學習影像前處理、邊緣偵測、輪廓分析；用簡單規則法做一個瑕疵偵測雛形", "deliverable": "完成一支可運行的瑕疵偵測demo腳本", "note": null, "fit": "影像處理/瑕疵偵測(火+水)－電子運算偏火，大兒子/小女兒可做但非最佳，二女兒亦可涉略"}, {"time": "2027/03", "phase": "癸丑大運・偏印", "topic": "ROS2基礎", "task": "學習節點(node)、話題(topic)、服務(service)架構；跑通官方tutorial", "deliverable": "完成ROS2 Hello World + 一個簡單控制demo", "note": null, "fit": "ROS2架構(水)－大兒子、小女兒契合"}, {"time": "2027/04", "phase": "癸丑大運・偏印", "topic": "商用視覺系統操作邏輯", "task": "研究達明TM Landmark、Cognex或Keyence任一套系統的部署/校正/除錯邏輯(可先從官方教學影片/文件入手)", "deliverable": "完成一份「商用視覺系統比較與操作心得」筆記", "note": "重點在會部署、會排除故障，不必自建模型", "fit": "商用視覺系統操作(金+火)－二女兒契合度較高(金)"}, {"time": "2027/05", "phase": "癸丑大運・偏印", "topic": "Profinet + OPC UA", "task": "補齊四大工業協定的最後兩項，理解各協定適用場景與跟PLC/上位機的串接方式", "deliverable": "完成「四大協定」整合筆記(含比較表)", "note": "與9月Modbus、10月EtherCAT筆記合併成完整版", "fit": "四大工業協定整合(水)－大兒子、小女兒契合"}, {"time": "2027/06", "phase": "癸丑大運・偏印", "topic": "品牌中立模擬平台上手", "task": "學習RoboDK或同類型離線編程模擬工具，練習跨廠牌機械臂的程式規劃", "deliverable": "完成一個模擬案例(含至少一種機械臂)", "note": "維持不綁定單一品牌的彈性", "fit": "離線編程模擬(金)－二女兒(精密機械/金)契合度高"}, {"time": "2027 Q3", "phase": "癸丑大運・偏印 ・ (整合輸出期)", "topic": "異常偵測模型初步實作", "task": "用模擬或公開資料集，實作簡單異常偵測(先用閾值法，再嘗試簡單分類器如SVM/隨機森林)", "deliverable": "完成一個可運行的異常偵測prototype", "note": "不用一開始就上深度學習", "fit": "異常偵測模型(水+分析)－大兒子、小女兒契合"}, {"time": "2027 Q4", "phase": "癸丑大運・偏印", "topic": "第一版整合Demo", "task": "把視覺、協定串接、異常偵測整合成一個小型demo案，模擬「機台故障診斷+視覺輔助」情境", "deliverable": "完成demo作品集v1(可用於後續接案展示)", "note": null, "fit": "整合Demo(綜合)－依各自專長分工，非單一人主導"}, {"time": "2028 Q1", "phase": "癸丑→甲寅過渡", "topic": "[新] 邊緣運算與低代碼物聯網實作", "task": "安裝Node-RED，學習MQTT協定，實作將感測器數據轉發至本地端邊緣運算盒，並建立簡易監控儀表板", "deliverable": "完成一份可運行的數據監控Dashboard", "note": "可用樹莓派+Node-RED演練，為未來訂閱制服務鋪路", "fit": "數據流向/協定(水)－大兒子、小女兒契合；硬體配置(金)－二女兒可協助"}, {"time": "2028 Q1", "phase": "癸丑→甲寅過渡 ・ (實戰驗證期)", "topic": "深度相機導入", "task": "學習RealSense D435i的3D定位、點雲基礎應用，整合進既有demo", "deliverable": "完成深度相機應用demo", "note": null, "fit": "深度相機/點雲(金+水)－二女兒、大兒子皆可"}, {"time": "2028 Q1", "phase": "癸丑→甲寅過渡 ・ (實戰驗證期)", "topic": "[新] 伺服驅動器維修技術入門(B類)", "task": "學習常見伺服驅動器故障拆修技巧(電容老化、IGBT模組更換、風扇/散熱故障排除)；研究常見品牌(台達/三菱/安川)驅動器維修手冊", "deliverable": "完成「常見驅動器故障維修SOP」筆記v1", "note": "可從YouTube拆機教學、原廠維修手冊入手，非正式送修訓練", "fit": "驅動器拆修/焊接(金+火)－二女兒契合度較高，電流部分建議搭配協作而非獨自操作"}, {"time": "2028 Q2", "phase": "癸丑→甲寅過渡", "topic": "Agentic故障診斷工具 MVP", "task": "蒐集Fanuc/Yaskawa/ABB/台達/達明等品牌錯誤碼與維修手冊，建置RAG檢索+AI診斷建議系統雛形", "deliverable": "完成診斷工具MVP版本(可查詢+給初步建議)", "note": "複用你路由器自動化/CAPTCHA pipeline的agent開發經驗", "fit": "AI診斷工具/RAG(水)－大兒子、小女兒契合，複用資料處理專長"}, {"time": "2028 Q3", "phase": "癸丑→甲寅過渡", "topic": "安全規範 + 首個實戰案例", "task": "研讀ISO 10218 / ISO/TS 15066協作應用安全規範；主動接觸小型兼職/顧問案(哪怕低價或免費累積經驗)", "deliverable": "完成安全評估checklist；取得第一個實戰案例紀錄", "note": null, "fit": "安全規範/實戰接案(綜合，需人際溝通)－依個性特質評估，非命理決定"}, {"time": "2028 Q4", "phase": "癸丑→甲寅過渡", "topic": "[新] 服務商業化與SLA報價模板建置", "task": "制定標準化服務協議(SLA)（含遠端診斷、到場維修、零件保固計費方式）；製作專案評估標準報價單", "deliverable": "完成一份可立即對外應用的正式報價與專案合約範本", "note": "避免接案初期因不懂報價而虧本或失去議價空間", "fit": "商業邏輯/人際溝通(綜合)－不涉及五行偏重，視實際個性與意願而定"}, {"time": "2028 Q4", "phase": "癸丑→甲寅過渡", "topic": "工具迭代 + 作品集整理", "task": "根據實戰案例回饋迭代診斷工具；整理完整服務項目與作品集", "deliverable": "完成「服務型錄／作品集」正式版", "note": null, "fit": "作品集整理(綜合)－不涉五行偏重"}, {"time": "2028 Q4", "phase": "癸丑→甲寅過渡", "topic": "[新] 機構本體維修可行性評估", "task": "鎖定1-2個零件供應鏈較容易接觸的品牌(如台達、和椿代理的機種)，評估關節/齒輪箱/皮帶等核心零件取得管道與價格；同步研擬保固責任聲明範本(納入SLA報價模板)", "deliverable": "完成「機構維修零件供應鏈評估報告」+ 保固責任聲明條款草案", "note": "機構維修屬重資產項目，先評估、不急於投入", "fit": "機構本體維修需拆裝經驗(金屬工具/金)－二女兒契合度較高；供應鏈/合約條款評估(綜合)不涉五行"}, {"time": "2028 Q4", "phase": "癸丑→甲寅過渡", "topic": "[新] 驅動器/伺服系統常用備品與工具庫存建立", "task": "盤點常用驅動器板卡、伺服馬達、編碼器等易損零件型號；建立2-3家零件供應商聯繫管道與基本庫存清單，準備維修工具箱(電烙鐵、示波器、絕緣工具等)", "deliverable": "完成「常用備品清單」+ 至少1-2家供應商合作管道；工具箱到位", "note": "初期可小量備貨，依實戰案例逐步擴充", "fit": "備品/工具管理(金)－二女兒契合度較高；供應商溝通(綜合)不涉五行"}, {"time": "2029 Q1", "phase": "甲寅大運・劫財 ・ (對外啟動期)", "topic": "正式對外", "task": "建立接案管道(LinkedIn、104、既有人脈)，製作服務頁面/名片，明確定位「維修診斷+AI視覺整合+跨品牌協定串接」", "deliverable": "完成對外服務頁面/名片；開始主動接觸潛在客戶", "note": null, "fit": "對外業務拓展(綜合，需人際/溝通特質)－命理僅供參考，實際仍看個性意願"}, {"time": "2029 Q2", "phase": "甲寅大運・劫財", "topic": "[新] 多模態AI視覺模型(VLM)導入診斷升級", "task": "評估並導入開源/商用多模態大模型(GPT-4o視覺、LLaVA、Qwen-VL)來輔助異常偵測，降低傳統OpenCV規則法的複雜度", "deliverable": "驗證VLM辨識工業缺陷/異常的可行性，並整合進既有的AI診斷工具中", "note": "AI技術日新月異，提前掌握「看圖說故事」的AI能力是未來終極護城河", "fit": "VLM架構與API串接(水)－大兒子、小女兒契合；硬體部署(金)－二女兒可協助"}, {"time": "2029 Q2", "phase": "甲寅大運・劫財", "topic": "承接首批正式案件", "task": "執行正式付費案件，持續依實戰經驗迭代診斷工具與流程SOP", "deliverable": "完成案件執行紀錄與客戶回饋整理", "note": null, "fit": "案件執行(綜合)－依實際專長分工"}, {"time": "2029 Q3", "phase": "甲寅大運・劫財", "topic": "服務包裝優化", "task": "評估將預知保養能力包裝成訂閱式服務方案(定期監測+異常預警)", "deliverable": "完成服務方案書v1", "note": "可利用2028 Q1的數據監控系統延伸", "fit": "服務方案設計(綜合)－依實際專長分工"}, {"time": "2029 Q3", "phase": "甲寅大運・劫財", "topic": "[新] 小規模試接驅動器/伺服馬達更換(B類)", "task": "挑選1-2個熟悉品牌，小規模試接單純的驅動器板卡/伺服馬達更換案件(非機構本體拆修)，累積實戰經驗與客戶回饋", "deliverable": "完成2-3筆B類維修案件紀錄；評估是否具備擴大投入機構本體維修(A類)的條件", "note": "門檻與資本投入低於機構本體維修，作為銜接的中間步驟", "fit": "驅動器/伺服馬達更換(金屬工具/金)－二女兒契合度較高；電流部分(火)大兒子/小女兒建議搭配二女兒協作"}, {"time": "2029 Q4", "phase": "甲寅大運・劫財", "topic": "[新] 驅動器/伺服系統維修正式納入服務型錄", "task": "根據B類試接案件經驗，制定正式的驅動器/伺服系統維修報價與保固條款，納入服務型錄與SLA；評估是否需要擴大備品庫存或增聘協作人力", "deliverable": "完成正式版「驅動器/伺服系統維修」服務項目上架", "note": "與2028Q4建立的供應商合作管道銜接，逐步擴大備貨規模", "fit": "服務項目管理/定價(綜合)不涉五行；實際維修執行仍以二女兒為主力，大兒子/小女兒可協助診斷判讀"}, {"time": "2029 Q4", "phase": "甲寅大運・劫財", "topic": "年度總結 + 下階段規劃", "task": "檢視全年執行成果，評估是否擴大團隊、開發課程或深化特定產業(如食品包裝/電子業)", "deliverable": "完成年度總結報告 + 2030規劃草案", "note": null, "fit": "年度總結/團隊規劃(綜合管理)－不涉五行偏重"}]}}, "個人硬體學習規劃(AGV+機械手臂)": {"category": "行動時程", "icon": "chip", "render": "hw-plan", "title": "個人硬體學習規劃：從零打造 AGV + 機械手臂（Python/Arduino/ROS2路線）", "subtitle": "說明：此為另一條「從零自製硬體」的學習路線，與行動時程表(維修診斷服務路線)互為補充，可依實際時間分配交錯進行。僅保留學習內容與完成標準，不含具體收入目標。", "payload": {"timeline": [{"time": "2026/05-06 (M1-M2)", "stage": "第一年・地基期", "content": "Python基礎：變數/迴圈/函式/類別、檔案讀寫、JSON處理、pip套件管理", "done": "能寫出「讀取感測器CSV資料並自動分析」的程式", "note": "工具：VSCode+Python 3.12；資源：Python官方教學、CS50P"}, {"time": "2026/07-08 (M3-M4)", "stage": "第一年・地基期", "content": "Linux(終端機指令/檔案系統/SSH/Ubuntu 22.04)＋Git(init/add/commit/push/GitHub)＋C++入門(變數/指標/類別基礎)", "done": "能在Ubuntu上用Git管理程式碼；能看懂簡單C++程式不恐慌", "note": "C++只需看懂ROS2程式碼即可，不用精通"}, {"time": "2026/09-10 (M5-M6)", "stage": "第一年・地基期", "content": "MicroPython控制樹莓派Pico W；Arduino控制馬達速度(PWM)；超音波避障邏輯", "done": "做出一台「會自動避障的小車」，拍影片建立作品集", "note": "硬體：Pico W、Arduino Uno R3、L298N馬達驅動板、TT馬達×4、HC-SR04、麵包板，總預算約NT$3,000內"}, {"time": "2026/11-12 (M7-M8)", "stage": "第一年・地基期", "content": "ROS2入門：Node/Topic/Publisher/Subscriber、Launch file基礎、RViz2視覺化", "done": "用ROS2的Topic控制小車前進後退左右轉；在RViz2看到機器人座標", "note": "環境：Ubuntu 22.04 + ROS2 Humble(LTS)；資源：Robotics Back-End(YouTube)"}, {"time": "2027/01-02 (M9-M10)", "stage": "第一年・地基期", "content": "Gazebo模擬器：建立虛擬環境、匯入URDF模型、模擬小車導航、ROS2整合", "done": "虛擬小車在模擬工廠中自動導航到指定位置，不需真實硬體也能測試邏輯", "note": null}, {"time": "2027/03-04 (M11-M12)", "stage": "第一年・整合專題", "content": "整合專題：ROS2控制的避障小車(Python邏輯+Arduino馬達控制+ROS2指令+感測器回饋)", "done": "用筆電透過ROS2遠端控制小車，小車自動避開障礙物；製作README放GitHub", "note": null}, {"time": "2027/05-07 (M13-M15)", "stage": "第二年・核心技能期", "content": "OpenCV電腦視覺：影像讀取/灰階/二值化→輪廓偵測/形狀辨識→YOLO物件辨識→OpenCV+ROS2整合", "done": "攝影機辨識物件後小車自動移動到旁邊；YOLO模型能辨識3種以上自定義物件", "note": null}, {"time": "2027/08-10 (M16-M18)", "stage": "第二年・核心技能期", "content": "MoveIt2手臂控制：URDF建立手臂模型、正逆向運動學、路徑規劃、手臂+視覺整合", "done": "手臂能自動夾取指定顏色物件放到指定位置", "note": "硬體二選一：6軸舵機手臂套件(~NT$2,000) 或 MyCobot 280 Pi(~NT$15,000)"}, {"time": "2027/11-12 (M19-M20)", "stage": "第二年・核心技能期", "content": "ROS2 Nav2導航：SLAM建圖、AMCL定位、Nav2路徑規劃、動態障礙物迴避", "done": "AGV在未知環境自動建地圖；設定目標點後自動導航；動態避讓", "note": null}, {"time": "2028/01-04 (M21-M24)", "stage": "第二年・核心技能期", "content": "Intel RealSense D435i：深度影像vs RGB、Open3D點雲處理、3D物件定位、RealSense+ROS2+MoveIt2整合", "done": "手臂透過3D相機精確抓取任意擺放的工件", "note": "此階段對應本人大運進入甲寅運，學習能量較強的時期"}, {"time": "2028/05-07 (M25-M27)", "stage": "第三年・工業化期", "content": "工業通訊協議：Modbus TCP(pymodbus讀取PLC數據)、OPC UA(連接不同品牌設備)", "done": "用Python讀取模擬PLC溫度/壓力數據；透過OPC UA控制虛擬設備開關", "note": null}, {"time": "2028/08-10 (M28-M30)", "stage": "第三年・工業化期", "content": "EtherCAT伺服控制：主站概念、SOEM開源主站程式庫、伺服馬達位置/速度/扭矩控制、多軸同步", "done": "用Python透過EtherCAT控制伺服馬達精確定位", "note": "建議找廠商借測試伺服驅動器練習"}, {"time": "2028/11-2029/01 (M31-M33)", "stage": "第三年・系統整合", "content": "系統整合實戰：RealSense辨識→YOLO判讀→MoveIt2夾取→AGV搬運→OPC UA回報→PLC記錄，全流程串接", "done": "整個流程自動化，人只需監控螢幕；製作完整技術文件", "note": null}, {"time": "2029/02-04 (M34-M36)", "stage": "第三年・首個客戶", "content": "尋找第一個願意付費的工廠：作品影片發布、主動聯繫中小型工廠(50-200人)、提供免費診斷換取進場機會", "done": "取得第一個實際案例(照片/影片/合作紀錄)", "note": null}, {"time": "2029/05-07 (M37-M39)", "stage": "第四年・商業化能力", "content": "非技術技能：提案簡報(PowerPoint說明ROI)、報價單製作、合約基礎(交付標準/付款條件)、專案管理", "done": "能完整走過一次提案→報價→合約→交付的流程", "note": null}, {"time": "2029/08-2030/04 (M40-M48)", "stage": "第四年・規模化", "content": "評估是否擴大團隊(技術助手/業務或PM角色)，自己轉為技術總監+對外談案子的定位", "done": "視實際案量決定是否需要增聘人力", "note": null}], "hwUpdate": {"headers": ["項目", "原規劃內容", "實際決策更新", "原因", "費用估算"], "rows": [{"item": "M5-M6 主控板", "orig": "樹莓派 Pico W", "update": "改用 ESP32-S3 DevKitC-1（一次到位，不用原版再換）", "reason": "ESP32-S3雙核240MHz較快、記憶體較大、內建藍牙BLE5.0、支援AI加速與接攝影機(OV2640)，對應之後YOLOv8視覺應用；程式碼與MicroPython語法幾乎相同，學習成本沒有增加", "cost": "ESP32-S3 DevKitC×2(約500元)+USB-C線(100)+麵包板(80)+杜邦線(100)+基本感測器包(300)＝約1,000～1,100元"}]}, "backup": {"headers": ["工具", "費用", "特色", "適合情境"], "rows": [{"tool": "Carnets（Jupyter Notebook）", "cost": "免費", "feature": "離線可用，支援NumPy/Pandas/Matplotlib", "use": "數據分析、初學者練習"}, {"tool": "a-Shell", "cost": "免費", "feature": "類Unix終端環境，可直接跑Python", "use": "臨時想寫小程式測試"}, {"tool": "Google Colab", "cost": "免費（需網路）", "feature": "完整雲端Linux環境，可裝任何套件", "use": "需要較完整運算環境時"}, {"tool": "Pyto IDE", "cost": "約US$8～15", "feature": "內建Python 3.10直譯器＋100多個套件＋除錯器", "use": "想要較完整IDE體驗"}]}}}, "硬體採購清單": {"category": "硬體與環境", "icon": "cart", "render": "price-list", "title": "硬體採購清單", "subtitle": "對應80週追蹤器時程的採購建議", "payload": {"items": [{"name": "ESP32-S3 N16R8開發板", "reason": "8MB PSRAM + 16MB Flash，明確支援AI/攝影機應用；優於ESP32-C3（單核RISC-V、無PSRAM、不支援攝影機）", "timing": "Year1 Week13前（ESP32單元開始前）", "cost": "依台灣現貨行情", "status": "未購買"}, {"name": "USB-C資料傳輸線", "reason": "部分USB-C線僅供電、無資料線，燒錄程式必須確認為資料線", "timing": "與開發板同時購入", "cost": "低", "status": "未購買"}, {"name": "麵包板(Breadboard)", "reason": "免焊接測試電路，適合初期感測器/LED接線實驗", "timing": "Year1 Week13前", "cost": "低", "status": "未購買"}, {"name": "杜邦線(公對公/公對母/母對母各一組)", "reason": "連接感測器、馬達驅動板、麵包板之間的接線", "timing": "Year1 Week13前", "cost": "低", "status": "未購買"}, {"name": "L298N馬達驅動板", "reason": "Week15馬達控制單元使用，控制直流馬達轉速與方向", "timing": "Year1 Week15前", "cost": "低", "status": "未購買"}, {"name": "直流馬達+輪子組(2顆，含編碼器可選)", "reason": "AGV機構組裝(Week20)所需動力來源", "timing": "Year1 Week20前", "cost": "中", "status": "未購買"}, {"name": "超音波感測器HC-SR04", "reason": "Week14感測器單元、避障邏輯核心元件", "timing": "Year1 Week14前", "cost": "低", "status": "未購買"}, {"name": "SG90伺服馬達（建議先備4顆）", "reason": "小型舵機，扭力足以練習基本關節控制，是MoveIt2運動規劃單元(Week39~42)前務必先備的入門硬體", "timing": "Year1 Week13後即可先備（練習PWM控制）", "cost": "低", "status": "未購買"}, {"name": "PCA9685 16路PWM/伺服驅動板", "reason": "ESP32單顆I/O腳位有限，多顆伺服馬達同時控制建議加一片驅動板，透過I2C集中管理", "timing": "與SG90同時購入", "cost": "低", "status": "未購買"}, {"name": "玩具機械手臂套件（4~6軸，含SG90 x4~6）", "reason": "低成本入門機械臂，用來實際銜接Year2 MoveIt2規劃結果與Year3抓取任務練習，比純模擬更有手感", "timing": "Year2 Week39前（MoveIt2單元開始前）", "cost": "中", "status": "未購買"}, {"name": "AGV底盤套件", "reason": "Week20機構組裝使用的底盤結構件", "timing": "Year1 Week20前", "cost": "中", "status": "未購買"}, {"name": "鋰電池組+穩壓模組", "reason": "AGV獨立供電，需確認電壓符合ESP32與馬達驅動板需求", "timing": "Year1 Week20前", "cost": "中", "status": "未購買"}, {"name": "Intel RealSense D435i", "reason": "Year3深度視覺與點雲處理核心感測器，Week49前需到位", "timing": "Year3 Week49前", "cost": "高", "status": "未購買"}, {"name": "ArUco校正標記板(可自行列印)", "reason": "Week63手眼校正實驗使用，可先自行列印測試", "timing": "Year3 Week63前", "cost": "極低", "status": "未購買"}], "have": ["Raspberry Pi 4B（主軸二樹莓派課程使用）", "Arduino（部分基礎控制練習可用）", "遊戲筆電（i7 / RTX 4060，作為Year2後訓練與模擬環境）"], "note": "採購原則：依「快用到才買」排序，避免資金與空間壓力集中在Year1初期；預估花費欄位可自行填入實際報價後加總。"}}, "🔧 硬體採購": {"category": "硬體與環境", "icon": "wrench", "render": "price-list-grouped", "title": "硬體採購清單｜ESP32為主控核心", "subtitle": "ESP32為主控核心", "payload": {"groups": [{"group": "已有設備", "items": [{"num": 1, "name": "ESP32 DevKit V1", "qty": 1, "price": "已有", "keyword": "ESP32開發板", "use": "主控大腦/WiFi/藍牙", "bought": "✅"}, {"num": 2, "name": "RTX 4060筆電", "qty": 1, "price": "已有", "keyword": "—", "use": "開發/模擬/AI運算", "bought": "✅"}, {"num": 3, "name": "樹莓派4B+", "qty": 1, "price": "已有", "keyword": "—", "use": "邊緣部署/硬體接口", "bought": "✅"}, {"num": 4, "name": "Arduino UNO", "qty": 1, "price": "已有", "keyword": "—", "use": "馬達控制", "bought": "✅"}]}, {"group": "7月前需購買（AGV小車）", "items": [{"num": 5, "name": "L298N馬達驅動板", "qty": 1, "price": "NT$50", "keyword": "L298N雙H橋馬達驅動", "use": "驅動四顆TT馬達", "bought": "☐"}, {"num": 6, "name": "TT直流減速馬達", "qty": 4, "price": "NT$200", "keyword": "TT直流減速馬達", "use": "四輪驅動", "bought": "☐"}, {"num": 7, "name": "HC-SR04超音波感測器", "qty": 2, "price": "NT$100", "keyword": "超音波距離感測模組", "use": "前後障礙偵測", "bought": "☐"}, {"num": 8, "name": "四驅小車底盤套件", "qty": 1, "price": "NT$300", "keyword": "四驅小車底盤", "use": "車身結構", "bought": "☐"}, {"num": 9, "name": "18650鋰電池", "qty": 2, "price": "NT$200", "keyword": "18650鋰電池3000mAh", "use": "馬達獨立電源", "bought": "☐"}, {"num": 10, "name": "18650電池盒（雙節）", "qty": 1, "price": "NT$50", "keyword": "18650電池盒2節", "use": "電池固定", "bought": "☐"}, {"num": 11, "name": "麵包板大板", "qty": 1, "price": "NT$80", "keyword": "麵包板830孔", "use": "快速接線", "bought": "☐"}, {"num": 12, "name": "杜邦線（公公/公母）", "qty": 2, "price": "NT$150", "keyword": "杜邦線20cm套裝", "use": "連接各模組", "bought": "☐"}, {"num": 13, "name": "LED（紅/黃/綠）", "qty": 5, "price": "NT$50", "keyword": "5mm LED套裝", "use": "狀態指示燈", "bought": "☐"}, {"num": 14, "name": "220Ω電阻", "qty": 10, "price": "NT$30", "keyword": "碳膜電阻220歐姆", "use": "LED限流", "bought": "☐"}, {"num": 15, "name": "有源蜂鳴器", "qty": 1, "price": "NT$30", "keyword": "有源蜂鳴器5V", "use": "警報音效", "bought": "☐"}, {"num": 16, "name": "Micro-USB傳輸線", "qty": 2, "price": "NT$100", "keyword": "Micro-USB充電傳輸線", "use": "燒錄/供電", "bought": "☐"}]}, {"group": "第二年購買（視覺/手臂）", "items": [{"num": 17, "name": "USB攝影機（720P以上）", "qty": 1, "price": "NT$500", "keyword": "USB webcam 720p", "use": "OpenCV視覺輸入", "bought": "☐"}, {"num": 18, "name": "6軸舵機手臂套件", "qty": 1, "price": "NT$2,000", "keyword": "6軸機械手臂套件", "use": "MoveIt2練習用", "bought": "☐"}, {"num": 19, "name": "Intel RealSense D435i", "qty": 1, "price": "NT$12,000", "keyword": "Intel RealSense D435i", "use": "3D點雲/深度視覺", "bought": "☐"}]}], "total": {"label": "7月前採購合計", "value": "NT$1,090"}}}, "📌 ESP32腳位": {"category": "硬體與環境", "icon": "chip", "render": "pins", "title": "ESP32 DevKit V1｜本專案腳位分配表", "subtitle": "ESP32 DevKit V1 腳位分配", "payload": {"groups": [{"group": "輸出：指示燈 / 蜂鳴器", "items": [{"num": 1, "func": "內建LED", "pin": "GPIO2", "pico": "GP25(LED)", "wiring": "板上小LED", "note": "低電位亮"}, {"num": 2, "func": "紅色LED", "pin": "GPIO26", "pico": "GP15", "wiring": "GPIO26→220Ω→LED+→GND", "note": "危險警示"}, {"num": 3, "func": "綠色LED", "pin": "GPIO25", "pico": "GP14", "wiring": "GPIO25→220Ω→LED+→GND", "note": "安全指示"}, {"num": 4, "func": "黃色LED", "pin": "GPIO27", "pico": "GP13", "wiring": "GPIO27→220Ω→LED+→GND", "note": "警告指示"}, {"num": 5, "func": "蜂鳴器", "pin": "GPIO33", "pico": "GP12", "wiring": "GPIO33→蜂鳴器+→GND", "note": "有源蜂鳴器"}], "warn": false}, {"group": "輸入：感測器 / 按鈕", "items": [{"num": 6, "func": "超音波Trig", "pin": "GPIO5", "pico": "GP17", "wiring": "GPIO5→HC-SR04 Trig", "note": "輸出觸發"}, {"num": 7, "func": "超音波Echo", "pin": "GPIO18", "pico": "GP16", "wiring": "HC-SR04 Echo→GPIO18", "note": "輸入接收"}, {"num": 8, "func": "按鈕", "pin": "GPIO32", "pico": "GP16", "wiring": "GPIO32→按鈕→GND", "note": "內部上拉"}, {"num": 9, "func": "備用感測器", "pin": "GPIO34", "pico": "—", "wiring": "GPIO34（輸入only）", "note": "只能輸入"}], "warn": false}, {"group": "通訊：Arduino UART", "items": [{"num": 10, "func": "UART TX", "pin": "GPIO17", "pico": "GP0", "wiring": "GPIO17(TX2)→Arduino RX(D0)", "note": "️需電平轉換"}, {"num": 11, "func": "UART RX", "pin": "GPIO16", "pico": "GP1", "wiring": "Arduino TX(D1)→GPIO16(RX2)", "note": "️需電平轉換"}, {"num": 12, "func": "共地GND", "pin": "GND", "pico": "GND", "wiring": "ESP32 GND→Arduino GND", "note": "必接！"}], "warn": false}, {"group": "電源", "items": [{"num": 13, "func": "3.3V輸出", "pin": "3V3", "pico": "3V3", "wiring": "供HC-SR04等3.3V模組", "note": "最大輸出150mA"}, {"num": 14, "func": "5V輸入", "pin": "VIN", "pico": "VSYS", "wiring": "外部5V電源輸入", "note": "USB供電時可用"}], "warn": false}, {"group": "️ 禁用腳位", "items": [{"num": 15, "func": "Flash腳位", "pin": "GPIO6–11", "pico": "—", "wiring": "絕對不要接任何東西", "note": "接了會當機"}, {"num": 16, "func": "開機腳位", "pin": "GPIO0", "pico": "—", "wiring": "開機期間保持高電位", "note": "謹慎使用"}, {"num": 17, "func": "輸入only", "pin": "GPIO34/35/36/39", "pico": "—", "wiring": "只能讀取，不能輸出", "note": "接按鈕/感測器"}], "warn": true}]}}, "接班分工建議": {"category": "家庭與命理", "icon": "users", "render": "profiles", "title": "孩子們未來接班契合度總覽（更新版，命理傾向參考，非決定性依據）", "subtitle": null, "payload": {"kids": [{"name": "二女兒", "element": "辛金", "yongshen": "用神：土、水、金／忌神：木", "fit": "本命即金，精密機械／伺服結構／離線編程／硬體邊緣運算盒配置等「金」屬性任務最貼近本命，是三人中整體契合度最高者", "age": "15歲"}, {"name": "大兒子", "element": "癸水", "yongshen": "用神：金、水／忌神：火(需留意)", "fit": "通訊協定(MQTT/EtherCAT)／資料處理／軟體與AI開發(Node-RED、RAG、VLM串接)等「水」屬性任務契合；長期高頻接觸大電流驅動、高熱電子設備(火)部分建議少碰", "age": "17歲"}, {"name": "小女兒", "element": "癸水", "yongshen": "用神：金、水(金局需護)／忌神：火(沖剋金局)", "fit": "精密機械／感測器／AI視覺資料標註訓練(金)其實對她有利；但高溫驅動器檢修、大型電子電路板維修(火)是命局最忌沖剋的方向，應避免碰觸", "age": "12歲"}], "summary": ["機械結構、伺服/驅動器硬體、離線編程模擬、硬體邊緣運算盒配置 → 優先考慮二女兒", "通訊協定、資料處理、AI診斷/RAG系統、VLM多模態AI API串接 → 大兒子、小女兒皆合適", "新增的「AI工具、Node-RED數據儀表板」→ 數據流向與軟體整合屬水，大兒子與小女兒為主要適用人選，硬體維護可由二女兒輔助", "電流迴路、高溫驅動器維修 → 屬火，對大兒子與小女兒是忌神，建議由您本人或未來聘僱的專業人力主責，孩子們可避開此區塊", "業務開發、客戶溝通、方案包裝 → 命理不特別偏向誰，取決於孩子個性與意願", "年齡現實：2026-2029這四年三人都在國高中階段，尚無法實際參與；真正可談接班約在他們20歲出頭之後(2030年代中期起)"], "summaryTitle": "更新後的分工配置摘要", "tipTitle": "給家長的提醒", "tip": "孩子們在2026-2029這四年都還在國高中階段，這份四年計劃本質上是您個人的技術升級規劃。真正的接班要等到他們大學甚至研究所階段（2030年代中期後）。這段期間的過渡準備，建議可從「AI提示詞工程(Prompt Engineering)」開始教起——讓孩子練習用自然語言引導AI工具產出報表或程式碼，這項能力不分五行命局，是不分孩子屬性都值得及早培養的基礎能力，也能自然而然為未來接班鋪路。", "disclaimer": "提醒：以上僅為命理五行屬性的契合度參考，實際接班安排仍應以孩子自身興趣、性格特質、能力意願為主要依據。"}}, "大運總表對照": {"category": "家庭與命理", "icon": "calendar", "render": "life-timeline", "title": "大運總表對照", "subtitle": "大運總表（來源：ALL_MERGED1補充對話，起運約6歲，陽年男命順行）", "payload": {"items": [{"age": "6–15", "year": "1988–1997", "stage": "庚戌", "gods": "正官／正財", "theme": "學業建立，規矩中成長"}, {"age": "16–25", "year": "1998–2007", "stage": "辛亥", "gods": "偏官／正印", "theme": "求學衝刺，貴人出現"}, {"age": "26–35", "year": "2008–2017", "stage": "壬子", "gods": "正印／劫財", "theme": "事業起步，能量回升"}, {"age": "36–45", "year": "2018–2027", "stage": "癸丑", "gods": "偏印／正財", "theme": "財印交戰，穩中求進（現在正處此運）"}, {"age": "46–55", "year": "2028–2037", "stage": "甲寅", "gods": "劫財／劫財", "theme": "命局最旺期，事業巔峰"}, {"age": "56–65", "year": "2038–2047", "stage": "乙卯", "gods": "比肩／比肩", "theme": "持續強旺，收成穩固"}, {"age": "66–75", "year": "2048–2057", "stage": "丙辰", "gods": "傷官／正財", "theme": "財源廣，享受人生"}, {"age": "76–85", "year": "2058–2067", "stage": "丁巳", "gods": "食神／正官", "theme": "退休安養，精神充實"}, {"age": "86–95", "year": "2068–2077", "stage": "戊午", "gods": "正財／傷官", "theme": "晚年財有餘，需養生"}, {"age": "96–100", "year": "2078–", "stage": "己未", "gods": "偏財／食神", "theme": "安享天年"}], "compareTitle": "與現有《行動時程表》《圖例說明》的比對", "notes": ["①「圖例說明」原本只標「2026(癸丑大運)」「2029(甲寅大運)」等年度區間，本表補上確切的起訖歲數(36-45歲癸丑、46-55歲甲寅…)與十神，可作為對照依據，內容一致，沒有衝突。", "② 確認「行動時程表」裡標示的大運轉換點（2028癸丑→甲寅過渡、2029甲寅正式啟動）與本表的2028-2037甲寅區間吻合。"]}}, "🔮 八字創業時機": {"category": "家庭與命理", "icon": "sparkle", "render": "fortune-timeline", "title": "八字大運 × 創業時機分析｜乙巳日主（男命，1982年）", "subtitle": "命盤：壬戌年｜己酉月｜乙巳日｜戊寅時 — 偏財格，傷官強，身弱需水木扶助", "payload": {"items": [{"stage": "庚戌", "age": "6–15歲", "year": "1988–1997", "stars": "⭐", "trait": "官殺剋身，學業壓力大", "advice": "打好基礎，服從學習", "now": null}, {"stage": "辛亥", "age": "16–25歲", "year": "1998–2007", "stars": "⭐⭐", "trait": "亥水生木，貴人出現", "advice": "深造考證，累積技能", "now": null}, {"stage": "壬子", "age": "26–35歲", "year": "2008–2017", "stars": "⭐⭐⭐", "trait": "正印生扶，事業起步", "advice": "小規模試水，建立人脈", "now": null}, {"stage": "癸丑", "age": "36–45歲", "year": "2018–2027", "stars": "⭐⭐⭐☆", "trait": "財印拉扯，穩中求進", "advice": "準備期！佈局技術和客戶", "now": "← 現在"}, {"stage": "甲寅", "age": "46–55歲", "year": "2028–2037", "stars": "⭐⭐⭐⭐⭐", "trait": "日主最強，帝旺爆發", "advice": "全力衝刺！創業黃金期", "now": "← 目標"}, {"stage": "乙卯", "age": "56–65歲", "year": "2038–2047", "stars": "⭐⭐⭐⭐", "trait": "比肩幫身，仍強", "advice": "守成傳承，第二曲線", "now": null}, {"stage": "丙辰", "age": "66–75歲", "year": "2048–2057", "stars": "⭐⭐⭐", "trait": "傷官生財，輕鬆型", "advice": "退而不休，顧問教學", "now": null}, {"stage": "丁巳", "age": "76–85歲", "year": "2058–2067", "stars": "⭐⭐", "trait": "食神制殺，壓力解除", "advice": "安養享受，含飴弄孫", "now": null}], "peakTitle": "甲寅運內最佳創業啟動流年（2028–2037）", "peak": [{"year": "戊申年", "yearNum": "2028", "age": "46歲", "stars": "★★★", "note": "進入甲寅運第一年，觀察整合"}, {"year": "庚戌年", "yearNum": "2030", "age": "48歲", "stars": "★★★★", "note": "財庫開，適合正式登記創業"}, {"year": "壬子年", "yearNum": "2032", "age": "50歲", "stars": "★★★★", "note": "水生木，資金到位，擴張好時機"}, {"year": "甲寅年", "yearNum": "2034", "age": "52歲", "stars": "★★★★★", "note": "大運流年雙甲寅，能量最強！"}, {"year": "丙辰年", "yearNum": "2036", "age": "54歲", "stars": "★★★★", "note": "傷官生財，業績爆發期"}]}}, "每季技術掃描檢核表": {"category": "行動時程", "icon": "listCheck", "render": "quarterly-checklist", "title": "每季技術掃描檢核表（滾動式追蹤機制）", "subtitle": "目的：AI與工業視覺技術迭代速度快，建議每季固定花半天時間執行以下檢核，避免規劃內容與現實脫節。", "payload": {"sections": [{"title": null, "quarters": [{"quarter": "2026 Q4", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2027 Q2", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2027 Q4", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2028 Q2", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2028 Q4", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2029 Q2", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}, {"quarter": "2029 Q4", "items": ["新的視覺辨識模型/工具是否出現(如更輕量的VLM、開源模型更新)", "原廠(Fanuc/西門子/台達等)是否新增內建AI診斷功能，是否壓縮到我方服務空間", "同業/新創是否推出類似的跨品牌整合診斷服務，價格與定位為何", "既有服務項目是否已被免費/低價工具取代，是否需要往上游(資料庫/整合)靠攏", "累積的異常案例資料庫是否有持續擴充，是否可轉化為更高階的服務(訂閱制/顧問)"]}]}, {"title": "機構本體維修專屬檢核（2028 Q4起適用）", "quarters": [{"quarter": "2028 Q4", "items": ["鎖定品牌的零件供應鏈是否穩定，價格/交期有無異動", "保固責任聲明條款是否需因應新客戶類型或新品牌調整", "B類(驅動器/伺服馬達)試接案件是否累積足夠經驗，評估是否可擴大投入A類(機構本體維修)"]}, {"quarter": "2029 Q2", "items": ["鎖定品牌的零件供應鏈是否穩定，價格/交期有無異動", "保固責任聲明條款是否需因應新客戶類型或新品牌調整", "B類(驅動器/伺服馬達)試接案件是否累積足夠經驗，評估是否可擴大投入A類(機構本體維修)"]}, {"quarter": "2029 Q4", "items": ["鎖定品牌的零件供應鏈是否穩定，價格/交期有無異動", "保固責任聲明條款是否需因應新客戶類型或新品牌調整", "B類(驅動器/伺服馬達)試接案件是否累積足夠經驗，評估是否可擴大投入A類(機構本體維修)"]}]}]}}, "圖例說明": {"category": "家庭與命理", "icon": "info", "render": "generic", "title": "圖例說明", "subtitle": null, "payload": {"rows": [["顏色", "對應年度／大運階段"], [null, "2026（癸丑大運・偏印）－硬體診斷打底 + AI工具上手"], [null, "2027（癸丑大運・偏印）－系統整合能力深化 + 第一版整合Demo"], [null, "2028（癸丑→甲寅過渡）－深度應用 + 首個實戰案例 + 商業化準備"], [null, "2029（甲寅大運・劫財）－正式對外接案啟動"]]}}, "主軸二_樹莓派課程": {"category": "硬體與環境", "icon": "chip", "render": "generic", "title": "主軸二：樹莓派4B Phase1 實作課程（加速練習場）", "subtitle": "定位：與主軸一（四年職涯路線圖）並行，提前用實體硬體驗證觀念、加速累積GitHub作品集", "payload": {"rows": [[null, "單元", "主題", "內容", "目標 / 產出", "狀態"], [null, "Unit 1", "環境建置與Raspberry Pi OS設定", "安裝Raspberry Pi OS、設定SSH遠端連線、建立獨立venv虛擬環境、規劃專案資料夾結構", "可透過SSH遠端操作樹莓派，並有乾淨的Python開發環境", "已完成"], [null, "Unit 2", "OpenCV基礎與顏色追蹤", "安裝opencv-python-headless、HSV色彩空間顏色追蹤、撰寫ColorTracker class，為銜接ROS2 PID控制器做準備", "完整可運作的ColorTracker class，能輸出目標物件座標", "進行中"], [null, "Unit 3", "ROS2 Humble從原始碼編譯", "在Raspberry Pi OS上調整swap空間、從原始碼編譯安裝ROS2 Humble（官方套件對Pi支援有限）", "樹莓派上可正常執行ROS2指令與範例節點", "未開始"], [null, "Unit 4", "OpenCV × ROS2整合", "把Unit2的ColorTracker包裝成ROS2節點，發布追蹤結果topic，銜接PID控制器概念", "ROS2節點即時發布顏色追蹤座標資料", "未開始"], [null, "Unit 5", "Nav2導航基礎", "認識Nav2架構、costmap概念、簡易路徑規劃在樹莓派上的資源限制與應對方式", "樹莓派上能跑通一個簡化版Nav2導航範例", "未開始"], [null, "Unit 6", "整合測試與作品化", "把Unit1~5成果整合，補齊README、接線圖、demo影片，整理成GitHub作品集項目", "完成一個可獨立展示的樹莓派視覺追蹤/導航子系統", "未開始"], [null, "關鍵原則", null, null, null, null], [null, "• 全程使用 opencv-python-headless，並以headless模式執行（樹莓派通常無桌面顯示需求）", null, null, null, null], [null, "• ROS2 Humble在Raspberry Pi OS上官方套件支援有限，需從原始碼編譯，過程中務必調整swap空間避免記憶體不足中斷", null, null, null, null], [null, "• 架構分工：樹莓派＝「腦」（高階AI/視覺/ROS2運算），ESP32/Arduino＝「手」（即時馬達控制），筆電＝訓練與模擬環境", null, null, null, null], [null, "• 每個專案獨立venv，只將 requirements.txt 提交至Git，不提交venv資料夾本身", null, null, null, null], [null, "• 與主軸一的對應關係：Unit2(OpenCV)對應主軸一Year2 Week25~28、Unit3~4(ROS2)對應Year2 Week29~34，可視為提前預習", null, null, null, null]]}}, "19堂課程學習規劃": {"category": "課程規劃", "icon": "book", "render": "generic", "title": "19堂AI課程 學習優先順序規劃（對照四年行動時程表）", "subtitle": null, "payload": {"rows": [["課程名稱", "分類", "建議學習時間", "對應時程表任務", "理由/備註", "狀態"], ["第二課 python編程基礎", "現在學(優先)", "2026/07-2026/08", "2026/08 編碼器訊號與電流迴路+Python複習", "整個四年計劃的地基，也是您目前最弱的一環，優先打好基礎", null], ["第六課 Cursor編程從入門到精通", "現在學(優先)", "2026/08", "2026/08 Python複習", "直接對應「用AI協作補足demo」的做法，善用Cursor邊寫邊解釋程式邏輯", null], ["第三課 prompt工程設計与優化", "現在學(優先)", "2026/07-2026/08", "貫穿全程", "決定跟AI協作品質的關鍵能力，也對應未來教孩子Prompt工程的規劃", null], ["第五課 API基礎與通過API調用大模型", "現在學(優先)", "2026/08-2026/09", "2026/09 Modbus TCP協定入門", "難度適中，學完可把「呼叫AI」變成可重複使用的技能", null], ["第七課 Embedding和向量數據庫", "⏳ 之後再學", "2027年底-2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "為RAG診斷工具打基礎，現在學用不到、容易忘，留到接近實戰前密集學", null], ["第八課 RAG技術", "⏳ 之後再學", "2027年底-2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "同上，緊鄰實戰項目再學，效果較好", null], ["第九課 RAG高級技術及實踐", "⏳ 之後再學", "2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "同上", null], ["第十一課 LangChain：多任務應用開發", "⏳ 之後再學", "2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "框架更新快，等接近使用時間點再學最新版本", null], ["第十二課 Function Calling與跨模型協作", "⏳ 之後再學", "2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "同上", null], ["第十三課 Agent智能體系統設計与應用", "⏳ 之後再學", "2028 Q1-Q2", "2028 Q2 Agentic故障診斷工具MVP", "核心對應「Agentic故障診斷工具」項目本身", null], ["第十四課 AutoGPT原理和實現", "⏳ 之後再學(選學)", "2028 Q1-Q2", "2028 Q2 Agentic故障診斷工具MVP", "概念參考用，非必要深入，了解原理即可", null], ["第十課 LlamaIndex：知識管理與信息檢索", "⏳ 之後再學", "2028 Q1", "2028 Q2 Agentic故障診斷工具MVP", "與RAG系列一併學習", null], ["第十六課 Coze工作原理及應用開發", "⏳ 之後再學(選學)", "2028 Q2-Q3", "2028 Q2-Q3 診斷工具迭代", "低代碼平台，若走純自建工具路線可跳過，若想快速驗證可學", null], ["第十七課 Coze應用、插件與SDK開發", "⏳ 之後再學(選學)", "2028 Q2-Q3", "2028 Q2-Q3 診斷工具迭代", "與第十六課一併評估是否需要", null], ["第十八課 dify本地部署及應用開發", "⏳ 之後再學(選學)", "2028 Q2-Q3", "2028 Q2-Q3 診斷工具迭代", "本地部署對資安/客戶資料保護較有利，可視需求選學", null], ["第一課 AI大模型基本原理", "可先跳過", "有空再看", "無強制對應", "偏理論，對「整合應用」定位非必需品", null], ["第四課 GPU與CPU計算硬件與大模型", "可先跳過", "除非要訓練模型", "無強制對應", "除非未來要自行訓練/微調模型，否則用不太到", null], ["第十五課 Fine-tuning技術與大模型優化", "可先跳過", "除非要訓練模型", "無強制對應", "定位是整合應用非訓練模型，技術門檻高、投報率低", null], ["第十九課／第二十二課 PyTorch基礎與進階", "可先跳過", "除非要自建視覺模型", "2027 Q3 異常偵測模型初步實作", "時程表已明確寫「不用一開始就上深度學習」，先用簡單規則法/SVM即可", null], ["第二十一課 TensorFlow及應用", "可先跳過", "除非要自建視覺模型", "無強制對應", "同上，優先度低", null], ["說明：狀態欄可自行填寫「已完成/進行中/未開始」，方便追蹤。分類顏色：綠=現在優先學，黃=之後對接實戰項目再學，灰=可先跳過。", null, null, null, null, null]]}}, "技能稀缺度與市場切入": {"category": "市場與商業", "icon": "diamond", "render": "generic", "title": "技能稀缺度總覽（來源：內容分析與主題規劃補充對話）", "subtitle": null, "payload": {"rows": [["技能", "現況", "稀缺度（台灣）", "對應切入階段", "具體行動"], ["BGA維修（電路板晶片級維修）", "已有", "有，但不多", "現在（不必等技術學完）", "主動聯繫工業機器人台灣代理商／系統整合商，介紹板級維修能力；先從FANUC/YASKAWA/ABB/台達等品牌切入，這是打開工廠關係最快的路徑"], ["Python + AI工具（Cursor等）", "學習中", "普通", "現在", "用Cursor把「你寫意圖→AI生成草稿→自己看懂修改→能講給別人聽」變成習慣；原訂M1-M2兩個月可壓縮至6週"], ["振動訊號分析（FFT）", "規劃中", "少見", "2027年", "隨OpenCV學習同步練FFT：先用模擬訊號練習（見下方程式範例），抓出正常/異常關節的頻率特徵差異"], ["ROS2 + 機器人控制", "規劃中", "少見", "2028年", "用ROS2讀取關節力矩/位置數據，建立「正常 vs 異常」判斷模型雛形，這是預測性維護的起點"], ["關節致動器診斷", "規劃中", "極少", "2028～2029年", "整合振動訊號＋ROS2＋BGA三者，形成「機構/電控/軟體」跨層診斷能力，這是最難被大廠壟斷的部分"], ["工業通訊協議（Modbus/OPC UA/EtherCAT）", "規劃中", "少見", "2028年", "接PLC讀取致動器數據，與既有2026/09 Modbus、2027/05 Profinet+OPC UA進度整合"], ["三階段切入路線圖（從已有技能往外擴，不是全部一起推）", null, null, null, null], ["階段", "時間", "怎麼做", "商業動作", "備註"], ["第一階段：現在就能做", "現在～2026年底", "用BGA技能切入現有工業機器人市場（FANUC/YASKAWA/ABB等品牌驅動板/控制板多為BGA封裝，台灣少有板級維修服務）", "聯繫代理商/系統整合商，接第一個工業機器人控制板維修案", null], ["第二階段：技能疊加", "2027年", "BGA ＋ 振動訊號分析 → 從「修板子的人」升級成「能找出問題根源的人」", "開始談年度維護合約（次收費為主，逐步導入合約制）", null], ["第三階段：完整定位成形", "2028～2029年", "六個技能到位：診斷層(振動+ROS2)、判斷層(AI模型)、維修層(致動器+BGA)、預防層(維護合約)", "切入人形機器人市場，開始找第一個付費客戶", null], ["與現有《行動時程表》的比對結果", null, null, null, null], ["① 時程表2028Q1已有「伺服驅動器維修技術入門(B類)」，方向與BGA/致動器診斷一致，但時程表完全沒提到「BGA」這項你已具備的技能——建議提前到現在就開始用，不必等到2028年。", null, null, null, null], ["② 時程表2027 Q3「異常偵測模型初步實作」已規劃SVM/隨機森林，可以和本表的「振動訊號分析(FFT)」銜接：先用FFT找特徵，再餵給簡單分類器。", null, null, null, null], ["③ 時程表目前沒有「先用現有工業機器人市場練兵、當作人形機器人的過渡收入」這條穩健路線的明確標註，建議在2026-2030的任務中加註「工業機臂維修＝現金流基礎」。", null, null, null, null]]}}, "維修市場數據與商業模式": {"category": "市場與商業", "icon": "bars", "render": "generic", "title": "市場規模參考數據（來源：機器人維修市場前景 對話）", "subtitle": null, "payload": {"rows": [["市場", "2025年前後規模", "未來規模／CAGR", "備註"], ["工業機器人維修與保養市場", "2025年約56億美元", "2035年約125億美元（CAGR約8.3%）", "含各類工業機器手臂維修保養"], ["機器人預防性保養市場", "2023年約51億美元", "2030年約100億美元（CAGR約10.1%）", "訂閱制/預測性維護是趨勢"], ["人形機器人整體市場", "2025年約78億美元", "2035年約1,819億美元（CAGR約37%）", "成長速度遠高於工業機器人"], ["人形機器人全產業鏈(含維修保養)", "－", "2050年約5兆美元（Morgan Stanley預估）", "屆時全球在用人形機器人可能超過10億台"], ["人形機器人維修服務（估）", "－", "約佔整體10～15%，即約5,000～7,500億美元", "2050年是很長期的預測，僅供方向參考，誤差可能很大"], ["時機提醒：人形機器人普及速度在2030年代中期之前會相對緩慢，2030年代末～2040年代才會加速爆發。現有工業機器人市場現在就存在、客戶就在台灣，適合作為過渡期的現金流基礎。", null, null, null], ["穩健路線三階段（不賭單一爆發，先用工業機器人維修養過渡期）", null, null, null], ["階段", "時間", "重點", "備註"], ["第一階段：先做有錢賺的事", "現在～2030", "工業機器手臂維修（FANUC/KUKA/ABB/安川等），養活自己、累積客戶關係、建立維修品牌", null], ["第二階段：眼睛開始盯人形機器人", "2028～2033", "追蹤台灣工廠導入狀況，主動接觸提供早期維護服務，補強力控/關節診斷等專項知識", null], ["第三階段：順勢切換重心", "2033年以後", "已有工廠信任＋維修實戰經驗＋人形機器人技術儲備，轉型比從零開始快很多", null], ["收費結構參考（人形機器人維修，模式成熟後適用）", null, null, null], ["項目", "收費方式", "金額估算", "適用階段"], ["關節診斷", "次收", "5,000～15,000元/次", "模式一：按次收費（2029起）"], ["感測器校正", "次收", "3,000～8,000元/次", "模式一：按次收費（2029起）"], ["年度維護合約", "月費制", "8,000～20,000元/台/月", "模式二：維護合約（2031目標，核心穩定收入）"], ["預測性維護系統", "年授權", "30～80萬元/廠/年", "模式三：預測性維護系統（2033目標，最高價值）"], ["跨層診斷能力框架（機構／電控／軟體）", null, null, null], ["層級", "判斷內容", "常用工具", "你目前的狀態"], ["機構層", "關節異音、諧波減速機磨損間隙、連桿變形、螺絲鬆動", "手摸、耳聽、扭力計、游標尺", "三層中最弱，建議找機會實際拆一台機器手臂累積經驗"], ["電控層", "馬達電流異常、編碼器數據準確度、驅動板過熱、電源穩定度", "示波器、萬用表、驅動器診斷軟體", "已有電路板(BGA)維修基礎，算有一定底子"], ["軟體層", "PID控制參數、感測器融合校正值漂移、ROS2節點異常、路徑規劃衝突", "ROS2 log分析、rqt、rviz", "ROS2/MoveIt2學習中，方向正確，持續按時程表推進"], ["三層都能判斷的人很少見（機械技師只懂機構層、電子維修員只懂電控層、軟體工程師只懂軟體層）——能在10分鐘內講出「問題在哪一層」，是這條路線最值錢的差異化能力。", null, null, null]]}}, "AI時代升級對照": {"category": "市場與商業", "icon": "rocket", "render": "generic", "title": "AI時代升級對照表（來源：內容分析與主題規劃 全總結對話）", "subtitle": null, "payload": {"rows": [["原規劃", "AI時代升級版", "為什麼要升級"], ["M1-M2 Python，預計2個月", "用Cursor/Claude加速，壓縮至6週", "AI工具已能自主讀取程式庫、除錯、改多檔案，接近初級工程師的能力，學習方法要跟著改變"], ["M7-M8 ROS2入門", "ROS2 ＋ AI Agent整合（讓機器人能自主判斷）", "2028年接案時，買方真正會問的是「機器人能不能自己決定怎麼動」，不只是「能不能動」"], ["第二年 OpenCV", "OpenCV ＋ 視覺語言模型（VLM）整合", "Physical AI是2026年台灣機器人產業最熱的交叉點，VLM讓機器人「看得懂」而不只是「偵測到」"], ["第三年 RealSense", "RealSense ＋ 邊緣AI推論（NVIDIA Jetson／樹莓派）", "工廠不一定有穩定網路，AI判斷要能在地端跑，才有實際導入的可能"], ["接案定位：自動化整合", "接案定位：AI驅動工廠自動化", "「懂硬體的AI自動化整合商」這個複合定位，在台灣目前幾乎是空白"], ["三個關鍵升級層的具體做法", null, null], ["升級層", "時間點", "具體做法"], ["① AI工具加速層", "現在就要用，不是等第二年", "不是「學完再用AI」，是「用AI來學」：你寫意圖→AI生成草稿→自己看懂每一行→修改→能講給別人聽。例如學float精度問題，直接請Cursor「寫一個示範float精度問題的Python程式，包含加減乘除、四捨五入、int轉換，每行加繁體中文註解」，跑完把不懂的地方問到懂為止"], ["② Physical AI層", "2027年起分三步", "第一步(2027)：相機看到工件→YOLOv8判斷零件種類→告訴機器手臂怎麼夾。第二步(2028)：加入語言模型，主管說「把紅色零件移到右邊」機器人就懂並執行(VLM整合)。第三步(2028年底)：把AI判斷放到樹莓派/Jetson上跑，不依賴網路"], ["③ AI接案定位層", "2027年底開始鋪陳", "定位語句：「我幫台灣中小型工廠，用AI視覺＋機器人自動化，取代重複性人工作業，從評估到導入一手包辦。」具體動作：每完成一個小專案就錄Demo影片放GitHub/LinkedIn；2027年起寫技術文章；2028年主動接觸1～2家小工廠免費試做換口碑"], ["結論（原文）：規劃方向完全正確，但學習速度要加快、技術定位要加上AI層——不是重新規劃，是在原架構上升級一個版本。", null, null]]}}, "開發環境架構(筆電vs樹莓派)": {"category": "硬體與環境", "icon": "monitor", "render": "generic", "title": "筆電 與 樹莓派4B+ 分工邏輯（來源：ALL_MERGED1補充對話）", "subtitle": null, "payload": {"rows": [["角色", "負責項目", "原因／注意事項"], ["筆電（思考中樞）", "開發、模擬、訓練、視覺化：Gazebo模擬、Open3D點雲重建、MoveIt2規劃、YOLO訓練", "i7-13650HX＋RTX4060的運算力才夠用；Gazebo Harmonic對GPU依賴重，Pi 4B+（4GB、無獨顯）幾乎會當機"], ["樹莓派4B+（手腳末梢）", "跑機器人本體上的輕量節點：接GPIO/Arduino/RealSense，做感測器讀取與低延遲控制輸出", "Open3D在Pi上做離線小批次可以，但D435i即時串流(30fps)來不及處理，第三年這塊要靠筆電RTX4060的CUDA加速"], ["典型工作流程", null, null], ["筆電（開發／Gazebo模擬） → git push → 樹莓派4B+（執行ROS2節點） → 感測器/Arduino（實體世界） → 感測器數據透過ROS2 topic回傳筆電", null, null], ["第三年加入D435i深度相機後：Pi負責串流採集、筆電負責點雲重建與SLAM視覺化，這樣分工在硬體資源上最合理。RealSense D435i要接Pi 4B+的USB 3.0（藍色孔），否則深度串流掉幀嚴重。", null, null], ["與現有時程表的比對", null, null], ["①「個人硬體學習規劃」M9-M12(Gazebo/整合專題)已規劃在筆電進行，方向一致，可以放心照原時程走。", null, null], ["② 原表未特別註明「D435i要接Pi的USB 3.0藍色孔」這類容易踩坑的細節，建議2028 Q1導入深度相機時對照本表操作。", null, null]]}}, "學習規劃平台對比": {"category": "硬體與環境", "icon": "scales", "render": "generic", "title": "學習規劃平台使用時機對比表（第二年 + 第三年）", "subtitle": null, "payload": {"rows": [["年度/類別", "學習項目", "說明", "樹莓派 4B+\n建議用途", "電競筆電\n建議用途", "結論"], ["第二年\n軟體學習", "OpenCV", "影像處理 / 電腦視覺", "基礎學習\n感測器整合、部署", "主力\n開發 + GPU加速", "筆電開發，Pi部署"], [null, "ROS 2", "機器人作業系統框架", "機器人端節點\nEdge輕量部署", "主力\n完整stack開發", "筆電開發，Pi執行節點"], [null, "Open3D", "3D點雲處理", "△ 勉強可行\n小資料集、速度慢", "主力\nRTX 4060加速", "幾乎全靠筆電"], [null, "MoveIt 2", "機械手臂運動規劃", "△ 輕量執行端\n控制器部署", "主力\n規劃 + 模擬", "筆電規劃，Pi控制輸出"], [null, "Gazebo", "機器人物理模擬器", "不建議\nRAM/GPU不足", "主力\nGPU渲染必要", "只用筆電"], ["第二年\n硬體學習", "Arduino", "微控制器 / 感測器介面", "主力搭檔\nGPIO直接連接", "燒錄編程用\nArduino IDE開發", "Pi搭Arduino為核心"], [null, "樹莓派本身\n(Linux/GPIO/HAT)", "嵌入式Linux + 硬體控制", "核心平台\n硬體控制本體", "SSH遠端\n程式碼推送", "Pi是主角"], ["第三年\n深度相機", "RealSense D435i\n基礎串流 + IMU", "深度影像擷取 + 慣性量測", "USB3 + librealsense\n邊緣部署首選", "主力開發\nSDK除錯方便", "筆電開發，Pi執行採集"], [null, "D435i + 點雲處理\n(Open3D/PCL)", "即時RGB-D重建", "效能瓶頸\n即時流跑不動", "主力\ni7+RTX全速", "只用筆電"], [null, "D435i + ROS 2\n+ SLAM建圖", "即時定位與建圖 (SLAM)", "機器人端\n輕量SLAM節點", "主力\n視覺化 + 模擬", "筆電主導，Pi協同"], ["圖例說明", null, null, null, null, null], ["主力", "此任務最佳平台，效能與整合度最高", null, null, null, null], ["可用", "能執行，適合特定子任務或部署情境", null, null, null, null], ["△  勉強", "技術上可行，但效能受限或需降規", null, null, null, null], ["不建議", "硬體規格不足，避免浪費時間", null, null, null, null]]}}, "📅 5月計畫": {"category": "行動時程", "icon": "calendar", "render": "generic", "title": "2026年5月｜Python基礎 — 每日任務表", "subtitle": null, "payload": {"rows": [["日期", "主題", "學習內容", "練習任務", "完成✓"], ["▌ 第一週｜環境建立 + 基礎語法", null, null, null, null], ["5/1（四）", "安裝環境", "Python 3.12 + VSCode + 擴充套件安裝", "print(\"Hello, 我要學機器人！\") 跑成功", ""], ["5/2（五）", "變數與數字", "變數/數學運算/字串f-string", "計算AGV走10公尺需要幾秒", ""], ["5/3（六）", "條件判斷", "if / elif / else / 比較運算子", "輸入電量顯示充足/正常/需充電", ""], ["5/4（日）", "迴圈", "for / while / break / continue", "模擬AGV每圈耗電，低於20%停止", ""], ["5/5（一）", "串列List", "索引/新增/刪除/for遍歷", "建立送貨清單，依序搬運印出", ""], ["5/6（二）", "字典Dict", "key-value/更新/items()遍歷", "3台AGV字典放進List印出狀態", ""], ["5/7（三）", "第一週專題", "AGV車隊狀態報告（整合本週所學）", "完整程式跑出來並截圖存檔", ""], ["▌ 第二週｜函式 + 模組", null, null, null, null], ["5/8（四）", "函式基礎", "def / return / 參數", "check_battery() + calculate_time()", ""], ["5/9（五）", "函式進階", "預設參數 / 回傳多個值", "move_agv() 帶預設速度", ""], ["5/10（六）", "模組使用", "import math / random / time", "用random模擬感測器讀值", ""], ["5/11（日）", "檔案讀寫", "open() / with / read / write", "寫入AGV日誌.txt並讀回顯示", ""], ["5/12（一）", "JSON處理", "json.dump / json.load", "AGV資料存成JSON再讀取", ""], ["5/13（二）", "類別入門", "class / __init__ / self / 方法", "AGV類別：move() + check_status()", ""], ["5/14（三）", "第二週專題", "AGV模擬系統v0.2（含JSON日誌）", "跑完4站並儲存log.json", ""], ["▌ 第三週｜實用套件 + 資料處理", null, null, null, null], ["5/15（四）", "pip安裝套件", "pip install pandas matplotlib numpy", "import成功不報錯", ""], ["5/16（五）", "pandas基礎", "DataFrame / 讀CSV / 篩選資料", "找出溫度超過26度的時間點", ""], ["5/17（六）", "matplotlib", "plot() / title / xlabel / savefig", "產出電量監控圖表並存png", ""], ["5/18（日）", "pandas進階", "max() / min() / len() / to_csv()", "自動產出每日分析報告", ""], ["5/19（一）", "綜合練習1", "模擬24小時感測器資料", "產出CSV + 統計報告", ""], ["5/20（二）", "綜合練習2", "加入異常偵測邏輯", "自動標記高溫/低電量時段", ""], ["5/21（三）", "整合測試", "把類別+pandas+matplotlib整合", "一鍵跑完分析輸出圖表", ""], ["▌ 第四週｜月底整合專題", null, null, null, null], ["5/22（四）", "專題設計", "AGV車隊監控系統架構規劃", "畫出程式流程圖", ""], ["5/23（五）", "專題開發1", "AGV類別 + 模擬移動邏輯", "3台AGV各自跑完5站", ""], ["5/24（六）", "專題開發2", "加入電量警報 + 日誌記錄", "警報觸發時印出警告", ""], ["5/25（日）", "專題開發3", "pandas分析 + matplotlib圖表", "產出電量趨勢圖", ""], ["5/26（一）", "GitHub設定", "git init / add / commit / push", "專題上傳到GitHub", ""], ["5/27（二）", "README撰寫", "Markdown語法 + 截圖嵌入", "README清楚說明專題功能", ""], ["5/28（三）", "自我評估", "對照完成標準逐項檢查", "6項標準全部打勾", ""], ["5/29（四）", "補強日", "複習本月最弱的部分", "重新寫一次類別不看筆記", ""], ["5/30（五）", "預習6月", "了解Linux/Git/C++是什麼", "看YouTube入門影片各30分鐘", ""], ["5/31（六）", "月底總結", "整理本月學習筆記到Notion", "5月學習心得寫100字以上", ""]]}}}};
+</script>
+<script>
+// ============================================================
+// ICON LIBRARY — minimal line icons, currentColor, 1em sizing
+// ============================================================
+const ICONS = {
+  emblem: `<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3"/><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M6.5 6.5 5 5M18 18l-1.5-1.5M17.5 6.5 19 5M6 18l-1.5 1.5"/></svg>`,
+  target: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.3"/><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"/></svg>`,
+  route: `<svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6a4 4 0 0 0 4-4 4 4 0 0 0-4-4H9a4 4 0 0 1-4-4 4 4 0 0 1 4-4h8"/></svg>`,
+  wrench: `<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.8 2.8-2-2 2.8-2.8Z"/></svg>`,
+  cart: `<svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="20" r="1.3" fill="currentColor" stroke="none"/><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6.2"/></svg>`,
+  chip: `<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>`,
+  monitor: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+  scales: `<svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14"/><path d="M5 7 2 13a3 3 0 0 0 6 0L5 7ZM19 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/></svg>`,
+  book: `<svg viewBox="0 0 24 24"><path d="M4 5.3A2.3 2.3 0 0 1 6.3 3H12v17H6.3A2.3 2.3 0 0 0 4 22.3V5.3Z"/><path d="M20 5.3A2.3 2.3 0 0 0 17.7 3H12v17h5.7A2.3 2.3 0 0 1 20 22.3V5.3Z"/></svg>`,
+  briefcase: `<svg viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M8 7.5V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5M3 12.5h18"/></svg>`,
+  diamond: `<svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9Z"/><path d="M2 9h20M9 3 7 9l5 12 5-12-2-6"/></svg>`,
+  bars: `<svg viewBox="0 0 24 24"><path d="M4 20V10M11.5 20V4M19 20v-7"/></svg>`,
+  rocket: `<svg viewBox="0 0 24 24"><path d="M13.6 2.6c2.9 1 4.9 3 5.9 5.9-2 .3-3.7 1-5 2.3-1.7 1.7-2.5 3.7-2.9 6-2.9-1-4.9-3-5.9-5.9.3-2.3 1-4.3 2.3-6 1.3-1.3 3.3-2 5.6-2.3Z"/><circle cx="15" cy="9" r="1.5" fill="currentColor" stroke="none"/><path d="M7.8 15c-1.5 0-2.9.6-3.9 1.7C2.9 17.9 2.5 19.6 2.4 21c1.4-.1 3-.5 4.1-1.5A5.2 5.2 0 0 0 8 15.7Z"/></svg>`,
+  users: `<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.3 20a5.7 5.7 0 0 1 11.4 0"/><circle cx="17.6" cy="9" r="2.5"/><path d="M15.2 13.2A5 5 0 0 1 20.6 18"/></svg>`,
+  info: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.3"/><circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>`,
+  sparkle: `<svg viewBox="0 0 24 24"><path d="M12 2.3c.6 3 2 4.5 5 5-3 .6-4.4 2-5 5-.6-3-2-4.4-5-5 3-.5 4.4-2 5-5Z"/><path d="M19 14.3c.3 1.3.9 1.9 2.2 2.2-1.3.3-1.9 1-2.2 2.3-.3-1.3-1-1.9-2.2-2.3 1.2-.3 1.9-.9 2.2-2.2ZM5.2 15.3c.25 1 .7 1.5 1.7 1.75-1 .25-1.5.75-1.7 1.75-.25-1-.7-1.5-1.7-1.75 1-.25 1.5-.7 1.7-1.75Z"/></svg>`,
+  search: `<svg viewBox="0 0 24 24"><circle cx="10.3" cy="10.3" r="6.5"/><path d="m20 20-4.7-4.7"/></svg>`,
+  checkCircle: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7.7 12.3 2.7 2.7 5.8-6"/></svg>`,
+  circleEmpty: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3"/></svg>`,
+  alertTriangle: `<svg viewBox="0 0 24 24"><path d="M12 3.3 2.2 20h19.6L12 3.3Z"/><path d="M12 9.5v5M12 17.6v.01"/></svg>`,
+  coins: `<svg viewBox="0 0 24 24"><ellipse cx="9" cy="6.8" rx="6" ry="3"/><path d="M3 6.8v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/><path d="M3 11.8v5c0 1.7 2.7 3 6 3 .9 0 1.9-.1 2.7-.4"/><ellipse cx="17" cy="14.8" rx="4.2" ry="2.2"/><path d="M12.8 14.8v3c0 1.2 1.9 2.2 4.2 2.2s4.2-1 4.2-2.2v-3"/></svg>`,
+  repeat: `<svg viewBox="0 0 24 24"><path d="M4 7.5h11a4 4 0 0 1 4 4v1M20 16.5H9a4 4 0 0 1-4-4v-1"/><path d="m7 4.3-3 3.2 3 3M17 20.7l3-3.2-3-3"/></svg>`,
+  deviceMobile: `<svg viewBox="0 0 24 24"><rect x="6.7" y="2.5" width="10.6" height="19" rx="2.2"/><path d="M11 18.3h2"/></svg>`,
+  listCheck: `<svg viewBox="0 0 24 24"><path d="M9.5 6h10.5M9.5 12h10.5M9.5 18h10.5"/><path d="m3.3 6 1 1 2-2.2M3.3 12l1 1 2-2.2M3.3 18l1 1 2-2.2"/></svg>`,
+  folder: `<svg viewBox="0 0 24 24"><path d="M3.5 6.3a1.8 1.8 0 0 1 1.8-1.8h4.2l2 2.3h7.2a1.8 1.8 0 0 1 1.8 1.8v9.6a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8Z"/></svg>`,
+  xCircle: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>`,
+};
+function ico(key, extraClass){
+  const svg = ICONS[key] || '';
+  if(!svg) return '';
+  return svg.replace('<svg ', `<svg class="icon${extraClass?' '+extraClass:''}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" `);
+}
+
+// ============================================================
+// 四年行動作戰室 — app logic
+// ============================================================
+const DATA = window.SITE_DATA;
+const SHEETS = DATA.sheets;
+const CAT_ORDER = DATA.categoryOrder;
+const CAT_ICON = DATA.categoryIcon;
+
+let openTabs = [];
+let activeTab = null;
+
+// ---------- helpers ----------
+function esc(s){
+  if(s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function nl2br(s){ return esc(s).replace(/\n/g,'<br>'); }
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+
+// ---------- sidebar nav ----------
+function buildNav(){
+  const nav = document.getElementById('navTree');
+  nav.innerHTML = '';
+  CAT_ORDER.forEach(cat => {
+    const keys = Object.keys(SHEETS).filter(k => SHEETS[k].category === cat);
+    if(!keys.length) return;
+    const group = el(`<div class="cat-group">
+      <div class="cat-head" data-cat="${esc(cat)}">
+        <span class="ci">${ico(CAT_ICON[cat]||'info')}</span>
+        <span class="ct">${esc(cat)}</span>
+        <span class="cx">▾</span>
+      </div>
+      <div class="cat-list"></div>
+    </div>`);
+    const list = group.querySelector('.cat-list');
+    keys.forEach(k => {
+      const item = el(`<div class="nav-item" data-key="${esc(k)}">
+        <span class="ni">${ico(SHEETS[k].icon||'info')}</span>
+        <span class="nt">${esc(SHEETS[k].title || k)}</span>
+      </div>`);
+      item.addEventListener('click', () => { openTab(k); closeSidebar(); });
+      list.appendChild(item);
+    });
+    group.querySelector('.cat-head').addEventListener('click', () => {
+      group.classList.toggle('collapsed');
+    });
+    nav.appendChild(group);
+  });
+}
+
+function refreshNavActive(){
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.key === activeTab);
+  });
+}
+
+// ---------- tabs ----------
+function openTab(key){
+  if(!SHEETS[key]) return;
+  if(!openTabs.includes(key)) openTabs.push(key);
+  activeTab = key;
+  renderTabs();
+  renderContent();
+  refreshNavActive();
+  document.getElementById('content').scrollTop = 0;
+}
+function closeTab(key, evt){
+  if(evt) evt.stopPropagation();
+  const idx = openTabs.indexOf(key);
+  if(idx === -1) return;
+  openTabs.splice(idx,1);
+  if(activeTab === key){
+    activeTab = openTabs.length ? openTabs[Math.max(0, idx-1)] : null;
+  }
+  renderTabs();
+  renderContent();
+  refreshNavActive();
+}
+function renderTabs(){
+  const bar = document.getElementById('tabbar');
+  bar.innerHTML = '';
+  openTabs.forEach(k => {
+    const s = SHEETS[k];
+    const tab = el(`<div class="tab ${k===activeTab?'active':''}" data-key="${esc(k)}">
+      <span class="ti">${ico(s.icon||'info')}</span>
+      <span class="tt">${esc((s.title||k).slice(0,14))}</span>
+      <span class="tx">✕</span>
+    </div>`);
+    tab.addEventListener('click', (e) => { if(!e.target.classList.contains('tx')) openTab(k); });
+    tab.querySelector('.tx').addEventListener('click', (e) => closeTab(k, e));
+    bar.appendChild(tab);
+  });
+}
+
+// ---------- render dispatch ----------
+function renderContent(){
+  const c = document.getElementById('content');
+  if(!activeTab){
+    c.innerHTML = `<div class="empty-state">
+      <div class="es-icon">${ico('folder')}</div>
+      <div>從左側選單挑一份資料表，或直接搜尋關鍵字開始瀏覽。</div>
+    </div>`;
+    return;
+  }
+  const s = SHEETS[activeTab];
+  let bodyHtml = '';
+  try{
+    bodyHtml = RENDERERS[s.render] ? RENDERERS[s.render](s.payload) : `<div class="gen-note">尚無渲染器：${esc(s.render)}</div>`;
+  }catch(err){
+    bodyHtml = `<div class="gen-note">內容渲染發生錯誤：${esc(err.message)}</div>`;
+    console.error(err);
+  }
+  c.innerHTML = `
+    <div class="page-head">
+      <div class="page-eyebrow"><span>${ico(s.icon||'info')}</span><span>${esc(s.category)}</span></div>
+      <h2 class="page-title">${esc(s.title || activeTab)}</h2>
+      ${s.subtitle ? `<p class="page-sub">${esc(s.subtitle)}</p>` : ''}
+    </div>
+    ${bodyHtml}
+    <footer class="site-footer">四年行動作戰室 · 資料整理自 AI機器人服務整合維修 行動時程表</footer>
+  `;
+}
+
+// ============================================================
+// RENDERERS
+// ============================================================
+const RENDERERS = {};
+
+// ---------- overview ----------
+RENDERERS.overview = (p) => {
+  let html = '';
+  let curYear = null;
+  p.roadmap.forEach(item => {
+    if(item.year !== curYear){
+      if(curYear !== null) html += `</div></div>`;
+      curYear = item.year;
+      html += `<div class="year-block"><div class="year-tag">▌ ${esc(curYear)}</div><div class="road-grid">`;
+    }
+    const skills = String(item.skill||'').split('/').map(x=>x.trim()).filter(Boolean);
+    html += `<div class="road-row">
+      <div class="road-num">${esc(item.num)}</div>
+      <div class="road-period"><div>${esc(item.period)}</div><div style="opacity:.6">${esc(item.months)}</div></div>
+      <div class="road-topic">${esc(item.topic)}</div>
+      <div class="road-skill">${esc(item.skill)}</div>
+      <div class="road-done">${esc(item.done)}</div>
+      <div class="road-cost">${esc(item.cost)}</div>
+    </div>`;
+  });
+  if(curYear !== null) html += `</div></div>`;
+
+  html += `<div class="section-title">${ico('coins')} 收入目標里程碑</div><div class="income-strip">`;
+  p.income.forEach((inc, i) => {
+    const isLast = i === p.income.length - 1;
+    html += `<div class="income-card">
+      <div class="income-time">${esc(inc.time)} · ${esc(inc.age)}</div>
+      <div class="income-goal">${esc(inc.goal)}</div>
+      <div class="income-model">${esc(inc.model)}</div>
+      <div class="income-asset">累積資產 ${esc(inc.asset)} ${isLast?ico('checkCircle'):''}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+};
+
+// ---------- dual-list ----------
+RENDERERS['dual-list'] = (p) => {
+  const col = (block) => `<div class="list-card"><h3>${esc(block.title)}</h3><ul>${
+    block.items.map(i=>`<li>${esc(i)}</li>`).join('')
+  }</ul></div>`;
+  let html = `<div class="dual-grid">${col(p.listA)}`;
+  if(p.listB.items.length) html += col(p.listB);
+  html += `</div>`;
+  return html;
+};
+
+// ---------- timeline (行動時程表) ----------
+RENDERERS.timeline = (p) => {
+  let html = `<div class="tl">`;
+  p.items.forEach(it => {
+    const isNow = /現在|立即行動/.test(it.time||'');
+    html += `<div class="tl-item ${isNow?'now':''}">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-meta">
+          <span class="tl-time">${esc(it.time)}</span>
+          ${it.phase ? `<span class="tag violet">${esc(it.phase)}</span>` : ''}
+        </div>
+        <div class="tl-topic">${esc(it.topic)}</div>
+        <div class="tl-field"><b>具體任務</b>${esc(it.task)}</div>
+        ${it.deliverable ? `<div class="tl-field"><b>產出／檢核點</b>${esc(it.deliverable)}</div>` : ''}
+        ${it.note ? `<div class="tl-field"><b>備註</b>${esc(it.note)}</div>` : ''}
+        ${it.fit ? `<div class="tl-fit"><span class="fi">${ico('users')}</span><span>${esc(it.fit)}</span></div>` : ''}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+};
+
+// ---------- hw-plan (個人硬體學習規劃) ----------
+RENDERERS['hw-plan'] = (p) => {
+  let html = `<div class="tl">`;
+  p.timeline.forEach(it => {
+    html += `<div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-meta">
+          <span class="tl-time">${esc(it.time)}</span>
+          <span class="tag accent">${esc(it.stage)}</span>
+        </div>
+        <div class="tl-field"><b>學習內容</b>${esc(it.content)}</div>
+        ${it.done ? `<div class="tl-field"><b>完成標準（能力驗收）</b>${esc(it.done)}</div>` : ''}
+        ${it.note ? `<div class="tl-field"><b>備註／資源與硬體</b>${esc(it.note)}</div>` : ''}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  if(p.hwUpdate && p.hwUpdate.rows.length){
+    html += `<div class="section-title">${ico('repeat')} 硬體採購決策更新</div>`;
+    p.hwUpdate.rows.forEach(r => {
+      html += `<div class="note-box amber">
+        <div style="margin-bottom:6px;"><b>${esc(r.item)}</b>　原規劃：${esc(r.orig)} → <b>更新為：${esc(r.update)}</b></div>
+        <div style="margin-bottom:6px;">${esc(r.reason)}</div>
+        <div class="tag mono amber">${esc(r.cost)}</div>
+      </div>`;
+    });
+  }
+  if(p.backup && p.backup.rows.length){
+    html += `<div class="section-title">${ico('deviceMobile')} 行動學習備援方案（無筆電時）</div>`;
+    html += `<div class="price-grid">`;
+    p.backup.rows.forEach(r => {
+      html += `<div class="price-card">
+        <div class="price-top"><div class="price-name">${esc(r.tool)}</div><div class="price-cost">${esc(r.cost)}</div></div>
+        <div class="price-reason">${esc(r.feature)}</div>
+        <div class="price-bottom"><span class="price-timing">${esc(r.use)}</span></div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  return html;
+};
+
+// ---------- price-list (硬體採購清單) ----------
+RENDERERS['price-list'] = (p) => {
+  let html = `<div class="price-grid">`;
+  p.items.forEach(it => {
+    const statusTag = /已購買|✅/.test(it.status) ? 'green' : 'red';
+    html += `<div class="price-card">
+      <div class="price-top">
+        <div class="price-name">${esc(it.name)}</div>
+        <div class="price-cost">${esc(it.cost)}</div>
+      </div>
+      <div class="price-reason">${esc(it.reason)}</div>
+      <div class="price-bottom">
+        <span class="price-timing">${ico('calendar')} ${esc(it.timing)}</span>
+        <span class="tag ${statusTag}">${esc(it.status)}</span>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  if(p.have && p.have.length){
+    html += `<div class="section-title">${ico('checkCircle')} 已具備硬體（不需再採購）</div><div class="have-list">`;
+    p.have.forEach(h => html += `<div class="have-chip"><span>${ico('checkCircle')}</span>${esc(h)}</div>`);
+    html += `</div>`;
+  }
+  if(p.note) html += `<div class="note-box">${esc(p.note)}</div>`;
+  return html;
+};
+
+// ---------- price-list-grouped (🔧 硬體採購) ----------
+RENDERERS['price-list-grouped'] = (p) => {
+  let html = '';
+  p.groups.forEach(g => {
+    html += `<div class="pg-group"><div class="pg-group-title"><span class="bar"></span>${esc(g.group)}</div>`;
+    g.items.forEach(it => {
+      const boughtIcon = /✅/.test(it.bought) ? ico('checkCircle','icon-good') : ico('circleEmpty','icon-mute');
+      html += `<div class="pg-row">
+        <span class="num">${esc(it.num)}</span>
+        <span class="nm">${esc(it.name)}</span>
+        <span class="qty">×${esc(it.qty)}</span>
+        <span class="kw">${ico('search')} ${esc(it.keyword)}</span>
+        <span class="use">${esc(it.use)}</span>
+        <span class="price">${esc(it.price)}</span>
+        <span class="bought">${boughtIcon}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  if(p.total){
+    html += `<div class="pg-total"><span>${esc(p.total.label)}</span><span>${esc(p.total.value)}</span></div>`;
+  }
+  return html;
+};
+
+// ---------- pins ----------
+RENDERERS.pins = (p) => {
+  let html = '';
+  p.groups.forEach(g => {
+    html += `<div class="pin-group ${g.warn?'warn':''}">
+      <div class="pg-group-title"><span class="bar"></span>${g.warn?ico('alertTriangle'):''}${esc(g.group)}</div>
+      <div class="gen-table-wrap"><table class="pin-table"><thead><tr>
+        <th>#</th><th>功能</th><th>ESP32腳位</th><th>對應Pico腳位</th><th>接線說明</th><th>備註</th>
+      </tr></thead><tbody>`;
+    g.items.forEach(it => {
+      html += `<tr>
+        <td>${esc(it.num)}</td>
+        <td>${esc(it.func)}</td>
+        <td class="pinval">${esc(it.pin)}</td>
+        <td class="pinval dim">${esc(it.pico)}</td>
+        <td class="pinval dim">${esc(it.wiring)}</td>
+        <td>${esc(it.note)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  });
+  return html;
+};
+
+// ---------- profiles (接班分工建議) ----------
+RENDERERS.profiles = (p) => {
+  let html = `<div class="kid-grid">`;
+  p.kids.forEach(k => {
+    html += `<div class="kid-card">
+      <div class="kid-name">${esc(k.name)} <span class="kid-age">${esc(k.age)}</span></div>
+      <div class="tag violet">${esc(k.element)}</div>
+      <div class="price-reason" style="color:var(--text-mute)">${esc(k.yongshen)}</div>
+      <div class="kid-fit">${esc(k.fit)}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  if(p.summary && p.summary.length){
+    html += `<div class="section-title">${esc(p.summaryTitle)}</div><div class="summary-list">`;
+    p.summary.forEach(s => html += `<div class="summary-item"><span class="sb">▸</span><span>${esc(s)}</span></div>`);
+    html += `</div>`;
+  }
+  if(p.tip) html += `<div class="section-title">${esc(p.tipTitle)}</div><div class="note-box violet">${esc(p.tip)}</div>`;
+  if(p.disclaimer) html += `<div class="note-box" style="opacity:.7; font-size:12px; margin-top:16px;">${esc(p.disclaimer)}</div>`;
+  return html;
+};
+
+// ---------- life-timeline (大運總表對照) ----------
+RENDERERS['life-timeline'] = (p) => {
+  let html = `<div class="life-grid">`;
+  p.items.forEach(it => {
+    const cur = /現在|正處此運/.test(it.theme||'');
+    html += `<div class="life-row ${cur?'current':''}">
+      <div class="life-age">${esc(it.age)}歲</div>
+      <div class="life-gods">${esc(it.year)}</div>
+      <div class="life-stage">${esc(it.stage)}</div>
+      <div class="life-theme">${esc(it.gods)}｜${esc(it.theme)}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  if(p.notes && p.notes.length){
+    html += `<div class="section-title">${esc(p.compareTitle)}</div>`;
+    p.notes.forEach(n => html += `<div class="gen-note numbered">${esc(n)}</div>`);
+  }
+  return html;
+};
+
+// ---------- fortune-timeline (🔮 八字創業時機) ----------
+function starHtml(s){
+  if(!s) return '';
+  const full = (s.match(/⭐|★/g)||[]).length;
+  const half = (s.match(/☆/g)||[]).length;
+  let out = '★'.repeat(full) + (half?'✩'.repeat(half):'');
+  return `<span class="stars">${out || esc(s)}</span>`;
+}
+RENDERERS['fortune-timeline'] = (p) => {
+  let html = `<div class="life-grid">`;
+  p.items.forEach(it => {
+    const cur = it.now && it.now.trim().length;
+    html += `<div class="life-row ${cur?'current':''}" style="grid-template-columns:90px 90px 1fr 1.4fr 90px;">
+      <div class="life-age">${esc(it.age)}</div>
+      <div class="life-stage">${esc(it.stage)}</div>
+      <div class="life-theme">${esc(it.trait)}</div>
+      <div class="life-theme">${esc(it.advice)}</div>
+      <div>${starHtml(it.stars)}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  if(p.peak && p.peak.length){
+    html += `<div class="section-title">${esc(p.peakTitle)}</div><div class="life-grid">`;
+    p.peak.forEach(pk => {
+      html += `<div class="life-row" style="grid-template-columns:90px 60px 1fr 1.6fr;">
+        <div class="life-stage">${esc(pk.year)}</div>
+        <div class="life-age">${esc(pk.age)}</div>
+        <div>${starHtml(pk.stars)}</div>
+        <div class="life-theme">${esc(pk.note)}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  return html;
+};
+
+// ---------- quarterly-checklist (每季技術掃描檢核表) ----------
+RENDERERS['quarterly-checklist'] = (p) => {
+  let html = '';
+  p.sections.forEach(sec => {
+    if(sec.title) html += `<div class="gen-divider">${esc(sec.title)}</div>`;
+    html += `<div class="price-grid">`;
+    sec.quarters.forEach(q => {
+      html += `<div class="price-card">
+        <div class="price-top"><div class="price-name">${ico('calendar')} ${esc(q.quarter)}</div></div>
+        <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px;">
+          ${q.items.map(i => `<li class="price-reason">${esc(i)}</li>`).join('')}
+        </ul>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+};
+
+// ============================================================
+// GENERIC RENDERER — for the remaining 9 sheets
+// ============================================================
+function classifySingle(text){
+  const t = text.trim();
+  if(t.startsWith('▌')) return {kind:'divider', text:t.replace(/^▌\s*/,'')};
+  if(t.startsWith('•') || t.startsWith('·')) return {kind:'note-bullet', text:t.replace(/^[•·]\s*/,'')};
+  if(/^[①②③④⑤⑥⑦⑧⑨⑩]/.test(t)) return {kind:'note-numbered', text:t};
+  if(/。/.test(t) || /：.{10,}/.test(t)) return {kind:'note', text:t};
+  if(t.length <= 34) return {kind:'divider', text:t};
+  return {kind:'note', text:t};
+}
+
+function badgeCell(val){
+  const s = String(val);
+  const m = s.match(/^(✓✓|✓|△|✗|⭐+|☆+|✅|☐)\s*([\s\S]*)$/);
+  if(!m) {
+    if(s === '已完成') return `<span class="pill done">已完成</span>`;
+    if(s === '進行中') return `<span class="pill doing">進行中</span>`;
+    if(s === '未開始' || s === '未購買') return `<span class="pill todo">${esc(s)}</span>`;
+    return nl2br(s);
+  }
+  const sym = m[1], rest = m[2];
+  let iconKey = null, cls = 'b-mute';
+  if(sym === '✓✓' || sym === '✅'){ iconKey='checkCircle'; cls='b-good'; }
+  else if(sym === '✓'){ iconKey='checkCircle'; cls='b-good'; }
+  else if(sym === '△'){ iconKey='alertTriangle'; cls='b-warn'; }
+  else if(sym === '✗'){ iconKey='xCircle'; cls='b-bad'; }
+  else if(sym === '☐'){ iconKey='circleEmpty'; cls='b-mute'; }
+  else if(sym.startsWith('⭐')||sym.startsWith('☆')){
+    return `<span class="badge-icon b-warn">${esc(sym)}</span>${nl2br(rest)}`;
+  }
+  const iconHtml = iconKey ? ico(iconKey, 'badge-icon '+cls) : `<span class="badge-icon ${cls}">${esc(sym)}</span>`;
+  return `${iconHtml}${nl2br(rest)}`;
+}
+
+RENDERERS.generic = (p) => {
+  const rows = p.rows;
+  let html = '';
+  let headers = null;
+  let tableOpen = false;
+
+  function nonNull(row){ return row.filter(c => c !== null && c !== undefined && c !== ''); }
+
+  function closeTable(){
+    if(tableOpen){ html += `</tbody></table></div>`; tableOpen = false; }
+  }
+  function openTable(hdrs){
+    closeTable();
+    html += `<div class="gen-table-wrap"><table class="gen-table"><thead><tr>` +
+      hdrs.map(h=>`<th>${nl2br(h===null||h===undefined?'':h)}</th>`).join('') + `</tr></thead><tbody>`;
+    tableOpen = true;
+  }
+
+  let prevWasDividerOrStart = true;
+
+  rows.forEach(row => {
+    const nn = nonNull(row);
+    if(nn.length === 1){
+      const c = classifySingle(String(nn[0]));
+      if(c.kind === 'divider'){
+        closeTable();
+        headers = null;
+        html += `<div class="gen-divider">${esc(c.text)}</div>`;
+        prevWasDividerOrStart = true;
+        return;
+      }
+      const cls = c.kind === 'note-bullet' ? 'bullet' : (c.kind === 'note-numbered' ? 'numbered' : '');
+      if(tableOpen && headers){
+        // keep this note INSIDE the open table (as a full-width row) so we
+        // never emit a <div> as a direct child of <tbody> (invalid HTML).
+        html += `<tr><td colspan="${headers.length}" class="gen-note ${cls}" style="border:none;">${esc(c.text)}</td></tr>`;
+      } else {
+        html += `<div class="gen-note ${cls}">${esc(c.text)}</div>`;
+      }
+      return;
+    }
+    // multi-cell row (positions preserved — nulls stay in place)
+    const maxLen = Math.max(...nn.map(c => String(c).replace(/\n/g,' ').length));
+    if(prevWasDividerOrStart && !headers && maxLen <= 20){
+      headers = row;
+      openTable(headers);
+      prevWasDividerOrStart = false;
+      return;
+    }
+    prevWasDividerOrStart = false;
+    if(!headers){
+      headers = row.map((_,i)=>'欄'+(i+1));
+      openTable(headers);
+    }
+    const groupStart = row[0] !== undefined && row[0] !== null && row[0] !== '';
+    html += `<tr class="${groupStart?'grp-start':''}">` +
+      headers.map((_,i) => `<td>${row[i] !== undefined && row[i] !== null ? badgeCell(row[i]) : ''}</td>`).join('') +
+      `</tr>`;
+  });
+  closeTable();
+  return html || '<div class="gen-note">（此工作表暫無可顯示內容）</div>';
+};
+
+// ============================================================
+// SEARCH
+// ============================================================
+function buildSearchIndex(){
+  const idx = [];
+  Object.keys(SHEETS).forEach(k => {
+    const s = SHEETS[k];
+    let text = (s.title||'') + ' ' + (s.subtitle||'') + ' ' + JSON.stringify(s.payload);
+    idx.push({key:k, title:s.title||k, icon:ico(s.icon||'info'), text});
+  });
+  return idx;
+}
+const SEARCH_INDEX = buildSearchIndex();
+
+function doSearch(q){
+  const box = document.getElementById('searchResults');
+  q = q.trim();
+  if(!q){ box.classList.remove('show'); return; }
+  const ql = q.toLowerCase();
+  const hits = SEARCH_INDEX
+    .map(item => {
+      const tl = item.text.toLowerCase();
+      const count = tl.split(ql).length - 1;
+      return {...item, count};
+    })
+    .filter(i => i.count > 0)
+    .sort((a,b)=> b.count - a.count)
+    .slice(0, 10);
+
+  if(!hits.length){
+    box.innerHTML = `<div class="sr-empty">找不到符合「${esc(q)}」的內容</div>`;
+    box.classList.add('show');
+    return;
+  }
+  box.innerHTML = hits.map(h => {
+    const rawIdx = h.text.toLowerCase().indexOf(ql);
+    let snip = h.text.substring(Math.max(0,rawIdx-18), rawIdx+40).replace(/[{}"\[\]]/g,' ');
+    return `<div class="sr-item" data-key="${esc(h.key)}">
+      <div class="sr-title"><span>${h.icon}</span><span>${esc(h.title)}</span></div>
+      <div class="sr-snip">…${esc(snip)}…</div>
+    </div>`;
+  }).join('');
+  box.classList.add('show');
+  box.querySelectorAll('.sr-item').forEach(item => {
+    item.addEventListener('click', () => {
+      openTab(item.dataset.key);
+      box.classList.remove('show');
+      document.getElementById('searchInput').value = '';
+    });
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => doSearch(e.target.value));
+document.getElementById('searchInput').addEventListener('focus', (e) => { if(e.target.value) doSearch(e.target.value); });
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.search-wrap')) document.getElementById('searchResults').classList.remove('show');
+});
+
+// ============================================================
+// SIDEBAR (mobile)
+// ============================================================
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('show');
+}
+function closeSidebar(){
+  if(window.innerWidth > 900) return;
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  document.getElementById('brandMark').innerHTML = ico('emblem');
+  buildNav();
+  // mobile menu toggle button injected into tabbar area
+  const toggle = document.getElementById('menuToggle');
+  if(toggle) toggle.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  });
+  openTab('📋 總覽');
+}
+init();
+
+</script>
+</body>
+</html>
