@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四年機器人工程師學習計畫總覽</title>
+<style>
+  :root{
+    --bg-page:#F7F6F2;
+    --surface-2:#FFFFFF;
+    --surface-1:#F1EFE8;
+    --border:#E3E1D8;
+    --text-primary:#1F1E1B;
+    --text-secondary:#6B6960;
+
+    --bg-pro:#EEEDFE;    --text-pro:#3C3489;
+    --bg-accent:#E6F1FB; --text-accent:#0C447C;
+    --bg-warning:#FAEEDA; --text-warning:#633806;
+    --bg-success:#EAF3DE; --text-success:#27500A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg-page:#15140F;
+      --surface-2:#242219;
+      --surface-1:#1D1C15;
+      --border:#3A3830;
+      --text-primary:#F2F1EA;
+      --text-secondary:#B4B2A9;
+
+      --bg-pro:#3C3489;    --text-pro:#CECBF6;
+      --bg-accent:#0C447C; --text-accent:#B5D4F4;
+      --bg-warning:#633806; --text-warning:#FAC775;
+      --bg-success:#27500A; --text-success:#C0DD97;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg-page); color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    padding:32px 16px 60px;
+  }
+  .wrap{max-width:640px; margin:0 auto;}
+  .lead{font-size:13px; color:var(--text-secondary); margin-bottom:16px;}
+  .card{
+    background:var(--surface-2); border:0.5px solid var(--border);
+    border-radius:12px; padding:1rem 1.25rem; margin-bottom:12px;
+  }
+  .card-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .badge{
+    width:32px; height:32px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:500; flex-shrink:0;
+  }
+  .card-title{font-size:15px; font-weight:500;}
+  .card-sub{font-size:12px; color:var(--text-secondary);}
+  .section-label{
+    font-size:11px; font-weight:500; color:var(--text-secondary);
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;
+  }
+  .pill-row{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;}
+  .pill{font-size:12px; padding:3px 10px; border-radius:20px;}
+  .goal-box{
+    background:var(--surface-1); border-radius:8px; padding:8px 12px;
+    font-size:13px; margin-bottom:6px; line-height:1.6;
+  }
+  .tip{
+    font-size:12px; color:var(--text-secondary); border-left:2px solid var(--border);
+    padding-left:8px; margin-top:8px; line-height:1.6;
+  }
+  .final-box{
+    background:var(--surface-1); border-radius:12px; padding:1rem 1.25rem;
+  }
+  .final-box .ft{font-size:14px; font-weight:500; margin-bottom:6px;}
+  .final-box .fb{font-size:13px; color:var(--text-secondary); line-height:1.7;}
+  .final-box .fb b{color:var(--text-primary); font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="display:inline-block;margin-bottom:10px;font-size:12px;color:var(--text-secondary);text-decoration:underline;">← 回到週進度追蹤器</a>
+  <div class="lead">你的方向很紮實 — 這是依實際週規劃整理的四年總覽</div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="badge" style="background:var(--bg-pro);color:var(--text-pro);">1</div>
+      <div>
+        <div class="card-title">第一年 — 軟體基礎打底</div>
+        <div class="card-sub">Week1~24 · 能用Python寫邏輯、控制硬體、版控協作</div>
+      </div>
+    </div>
+    <div class="section-label">核心技能</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--bg-pro);color:var(--text-pro);">Python基礎→進階</span>
+      <span class="pill" style="background:var(--bg-pro);color:var(--text-pro);">Linux操作</span>
+      <span class="pill" style="background:var(--bg-pro);color:var(--text-pro);">Git / GitHub</span>
+    </div>
+    <div class="section-label">硬體入門</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--surface-1);color:var(--text-secondary);">ESP32-S3：LED / 感測器 / PWM</span>
+      <span class="pill" style="background:var(--surface-1);color:var(--text-secondary);">SG90伺服馬達 + 玩具機械手臂</span>
+      <span class="pill" style="background:var(--surface-1);color:var(--text-secondary);">Flask網頁介面控制</span>
+    </div>
+    <div class="goal-box">年底目標：用Python + Flask做網頁介面，透過ESP32遠端控制SG90機械手臂與AGV避障</div>
+    <div class="tip">前3~5個月是最容易卡關、也最容易放棄的階段，寧可放慢也別跳過基礎。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="badge" style="background:var(--bg-accent);color:var(--text-accent);">2</div>
+      <div>
+        <div class="card-title">第二年 — 機器視覺 + 機器人系統</div>
+        <div class="card-sub">Week25~48 · 樹莓派＋筆電聯動，讓AGV能識別環境</div>
+      </div>
+    </div>
+    <div class="section-label">核心框架</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--bg-accent);color:var(--text-accent);">OpenCV</span>
+      <span class="pill" style="background:var(--bg-accent);color:var(--text-accent);">ROS 2 Humble</span>
+      <span class="pill" style="background:var(--bg-accent);color:var(--text-accent);">Gazebo模擬</span>
+      <span class="pill" style="background:var(--bg-accent);color:var(--text-accent);">MoveIt 2</span>
+      <span class="pill" style="background:var(--bg-accent);color:var(--text-accent);">YOLOv8</span>
+    </div>
+    <div class="section-label">樹莓派 × 筆電分工</div>
+    <div class="goal-box" style="font-size:12px;">筆電：訓練模型、跑Gazebo模擬｜樹莓派：跑ROS2節點、即時感測與控制</div>
+    <div class="goal-box">年底目標：Gazebo模擬AGV走迷宮，並用MoveIt2規劃路徑驅動實體SG90機械手臂完成抓取</div>
+    <div class="tip">RTX 4060跑YOLOv8偵測、Gazebo模擬、訓練小模型都很夠用。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="badge" style="background:var(--bg-warning);color:var(--text-warning);">3</div>
+      <div>
+        <div class="card-title">第三年 — 深度感知 + 3D視覺</div>
+        <div class="card-sub">Week49~64 · RealSense建點雲、手臂視覺抓取</div>
+      </div>
+    </div>
+    <div class="section-label">新增硬體</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--bg-warning);color:var(--text-warning);">Intel RealSense D435i</span>
+    </div>
+    <div class="section-label">技術重點</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--bg-warning);color:var(--text-warning);">Open3D點雲處理</span>
+      <span class="pill" style="background:var(--bg-warning);color:var(--text-warning);">ICP配準 / 平面分割</span>
+      <span class="pill" style="background:var(--bg-warning);color:var(--text-warning);">3D姿態估測 + 手眼校正</span>
+    </div>
+    <div class="goal-box">年底目標：AGV/手臂能用RealSense做3D視覺定位，自動辨識並抓取目標物</div>
+    <div class="tip">D435i在樹莓派上效能有限，點雲運算建議offload到筆電，用ROS2網路通訊串接。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="badge" style="background:var(--bg-success);color:var(--text-success);">4</div>
+      <div>
+        <div class="card-title">第四年 — 工業通訊協定</div>
+        <div class="card-sub">Week65~80 · 接上工廠PLC，進入真實工業場景</div>
+      </div>
+    </div>
+    <div class="section-label">通訊協定（由易到難）</div>
+    <div class="pill-row">
+      <span class="pill" style="background:var(--bg-success);color:var(--text-success);">Modbus TCP</span>
+      <span class="pill" style="background:var(--bg-success);color:var(--text-success);">OPC UA</span>
+      <span class="pill" style="background:var(--bg-success);color:var(--text-success);">Profinet</span>
+      <span class="pill" style="background:var(--bg-success);color:var(--text-success);">EtherCAT</span>
+    </div>
+    <div class="goal-box">M5里程碑：完整AGV系統展示 — 自主移動＋視覺辨識＋抓取＋工業通訊回報</div>
+    <div class="tip">這階段找工廠實習或兼職，摸真實PLC設備比紙上學協定快得多。</div>
+  </div>
+
+  <div class="final-box">
+    <div class="ft">關於接案 / 創業目標</div>
+    <div class="fb">
+      自主機器人＋電腦視覺＋工業通訊，是台灣製造業高需求的技術組合。<br><br>
+      <b>接案路線：</b>四年後具備AGV系統整合能力，賣給中小製造廠，技術門檻已在這份計畫中逐步打通。<br><br>
+      <b>求職路線：</b>資深機器人工程師是稀缺人才，這份80週計畫本身就是最有力的作品集證明。
+    </div>
+  </div>
+</div>
+</body>
+</html>
