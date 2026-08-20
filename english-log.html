@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職場英文對話 · 24週維修日誌</title>
+<style>
+:root{
+  --bg-page:#F7F6F2;
+  --card:#FFFFFF;
+  --card-2:#F1EFE8;
+  --card-3:#EAE7DD;
+  --border:#E5E2D8;
+  --border-soft:#EDEAE0;
+  --text-primary:#000000;
+  --text-secondary:#38362F;
+  --text-dim:#57544A;
+  --accent-amber:#E08600;
+  --accent-green:#0E9F6E;
+  --accent-red:#E24A3B;
+
+  --p-purple-bg:#EEEDFE; --p-purple-fg:#3C3489;
+  --p-teal-bg:#E1F5EE;   --p-teal-fg:#085041;
+  --p-amber-bg:#FAEEDA;  --p-amber-fg:#633806;
+  --p-coral-bg:#FAECE7;  --p-coral-fg:#712B13;
+
+  --font-mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg-page:#15140F;
+    --card:#242219;
+    --card-2:#1D1C15;
+    --card-3:#2C2A1F;
+    --border:#3A3830;
+    --border-soft:#332F26;
+    --text-primary:#FFFFFF;
+    --text-secondary:#E8E6DC;
+    --text-dim:#B7B3A5;
+    --accent-amber:#FFB84D;
+    --accent-green:#2FE0A0;
+    --accent-red:#FF7A63;
+
+    --p-purple-bg:#3C3489; --p-purple-fg:#CECBF6;
+    --p-teal-bg:#085041;   --p-teal-fg:#9FE1CB;
+    --p-amber-bg:#633806;  --p-amber-fg:#FAC775;
+    --p-coral-bg:#712B13;  --p-coral-fg:#F5C4B3;
+  }
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:var(--bg-page);
+  color:var(--text-primary);
+  font-family:var(--font-sans);
+  line-height:1.7;
+  padding:0 0 80px;
+  font-size:18px;
+}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
+
+/* ---------- Header ---------- */
+.header{
+  padding:36px 20px 28px;
+  max-width:920px; margin:0 auto;
+  border-bottom:1px solid var(--border-soft);
+}
+.eyebrow{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--accent-green); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green); box-shadow:0 0 8px var(--accent-green);}
+h1{
+  font-family:var(--font-mono); font-weight:600; font-size:26px; letter-spacing:-0.3px;
+  color:var(--text-primary); margin-bottom:8px;
+}
+.subtitle{color:var(--text-secondary); font-size:18px; max-width:640px;}
+
+/* ---------- Warning banner ---------- */
+.warn{
+  max-width:920px; margin:20px auto 0; padding:16px 18px;
+  background:var(--card-2); border:0.5px solid var(--border); border-left:3px solid var(--accent-amber);
+  border-radius:6px; font-size:17.5px; color:var(--text-primary);
+}
+.warn b{color:var(--accent-amber); font-family:var(--font-mono); font-weight:600;}
+
+/* ---------- Progress panel ---------- */
+.panel{max-width:920px; margin:24px auto 0; padding:0 20px;}
+.progress-card{
+  background:var(--card); border:0.5px solid var(--border); border-radius:14px; padding:20px;
+}
+.progress-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+.progress-label{font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); letter-spacing:1px; text-transform:uppercase;}
+.progress-pct{font-family:var(--font-mono); font-size:26px; font-weight:600; color:var(--accent-green);}
+.bar-track{height:6px; background:var(--card-3); border-radius:3px; overflow:hidden; margin-bottom:18px;}
+.bar-fill{height:100%; background:linear-gradient(90deg, var(--p-teal-fg), var(--accent-green), var(--accent-amber)); border-radius:3px; transition:width .4s ease;}
+.stage-row{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+.stage-mini{
+  border:0.5px solid var(--border); border-radius:12px; padding:10px 12px; cursor:pointer; background:var(--card-2);
+  transition:border-color .2s;
+}
+.stage-mini:hover{border-color:var(--text-dim);}
+.stage-mini.active{border-color:var(--accent-green);}
+.stage-mini .s-name{font-size:14.5px; color:var(--text-secondary); margin-bottom:6px;}
+.stage-mini .s-pct{font-family:var(--font-mono); font-size:19px; font-weight:600;}
+
+/* ---------- Search ---------- */
+.search-row{max-width:920px; margin:16px auto 0; padding:0 20px;}
+.search-input{
+  width:100%; background:var(--card); border:0.5px solid var(--border); border-radius:20px;
+  padding:11px 14px; color:var(--text-primary); font-family:var(--font-sans); font-size:17.5px;
+}
+.search-input:focus{outline:none; border-color:var(--accent-green);}
+.search-input::placeholder{color:var(--text-dim);}
+
+/* ---------- Trace + weeks ---------- */
+.stack{max-width:920px; margin:28px auto 0; padding:0 20px 0 20px; position:relative;}
+.trace{
+  position:absolute; left:38px; top:6px; bottom:6px; width:2px;
+  background:repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 8px);
+}
+.stage-block{margin-bottom:8px;}
+.stage-header{
+  display:flex; align-items:center; gap:14px; padding:14px 0 14px 0; cursor:pointer; user-select:none;
+}
+.stage-node{
+  width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:600; font-size:13px; flex-shrink:0; z-index:1; border:2px solid var(--bg-page);
+}
+.stage-header h2{font-family:var(--font-mono); font-size:18.5px; font-weight:600; color:var(--text-primary);}
+.stage-header .s-sub{font-size:15.5px; color:var(--text-secondary); margin-top:2px;}
+.stage-caret{margin-left:auto; color:var(--text-dim); font-size:13px; transition:transform .2s;}
+.stage-block.collapsed .stage-caret{transform:rotate(-90deg);}
+.stage-body{padding-left:52px; display:flex; flex-direction:column; gap:10px; padding-bottom:14px;}
+.stage-block.collapsed .stage-body{display:none;}
+
+/* ---------- Week card ---------- */
+.week{
+  background:var(--card); border:0.5px solid var(--border); border-radius:14px; overflow:hidden;
+}
+.week-head{display:flex; align-items:center; gap:12px; padding:13px 16px; cursor:pointer;}
+.led{width:9px; height:9px; border-radius:50%; flex-shrink:0; background:var(--text-dim); box-shadow:none;}
+.led{width:11px; height:11px;}
+.led.done{background:var(--accent-green); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent-green) 25%, transparent);}
+.led.partial{background:var(--accent-amber); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent-amber) 25%, transparent);}
+.week-title{font-family:var(--font-mono); font-size:18px; font-weight:600; flex:1;}
+.week-milestone-tag{
+  font-family:var(--font-mono); font-size:11px; padding:4px 9px; border-radius:20px; letter-spacing:0.5px; font-weight:700;
+  background:var(--accent-red); color:#fff; flex-shrink:0;
+}
+.week-caret{color:var(--text-dim); font-size:12px; transition:transform .2s; flex-shrink:0;}
+.week.open .week-caret{transform:rotate(180deg);}
+.week-goal{padding:0 16px 14px 33px; font-size:17.5px; color:var(--text-secondary); display:none;}
+.week.open .week-goal{display:block;}
+.week-purpose{padding:0 16px 12px 33px; font-size:17px; color:var(--text-primary); display:none; border-bottom:1px solid var(--border-soft); padding-bottom:16px;}
+.week.open .week-purpose{display:block;}
+
+.days{padding:0 16px 16px; display:none;}
+.week.open .days{display:block;}
+.day{border-top:1px solid var(--border-soft); padding:12px 0;}
+.day:first-child{border-top:none;}
+.day-row{display:flex; align-items:flex-start; gap:10px;}
+.day-check{
+  width:17px; height:17px; margin-top:2px; flex-shrink:0; cursor:pointer;
+  accent-color:var(--accent-green);
+}
+.day-main{flex:1; min-width:0;}
+.day-label-row{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; cursor:pointer;}
+.day-name{font-family:var(--font-mono); font-size:14px; color:var(--text-dim); flex-shrink:0;}
+.day-content{font-size:18.5px; font-weight:600; color:var(--text-primary);}
+.day-example{font-family:var(--font-mono); font-size:16.5px; color:var(--accent-green); margin-top:4px; opacity:.85;}
+.day-toggle{font-size:15px; color:var(--text-dim); margin-top:6px; cursor:pointer; display:inline-block;}
+.day-toggle:hover{color:var(--text-secondary);}
+.explanation{
+  display:none; margin-top:10px; background:var(--card-2); border:0.5px solid var(--border); border-radius:6px;
+  padding:14px 16px; font-size:18px; color:var(--text-primary); line-height:1.9;
+}
+.explanation.open{display:block;}
+.explanation code{
+  background:var(--card-3); color:var(--accent-amber); padding:1px 6px; border-radius:4px; font-family:var(--font-mono); font-size:16.5px;
+}
+.explanation pre{
+  background:var(--bg-page); border:0.5px solid var(--border); border-radius:6px; padding:12px 14px; margin:8px 0;
+  overflow-x:auto; font-family:var(--font-mono); font-size:16.5px; color:var(--text-primary); white-space:pre-wrap;
+}
+.explanation strong{color:var(--text-primary);}
+.dialogue-box{
+  margin-top:10px; background:var(--bg-page); border:0.5px solid var(--border); border-left:3px solid var(--accent-green);
+  border-radius:6px; padding:14px 16px; font-family:var(--font-mono); font-size:17px; color:var(--text-primary);
+  white-space:pre-wrap; line-height:1.8; display:none;
+}
+.dialogue-box.open{display:block;}
+
+/* ---------- Resources ---------- */
+.resources{padding:12px 16px 16px; border-top:1px solid var(--border-soft);}
+.resources-label{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;}
+.res-link{
+  display:inline-flex; align-items:center; gap:6px; font-size:16.5px; color:var(--accent-green); font-weight:600;
+  text-decoration:none; margin-right:16px; margin-bottom:4px;
+}
+.res-link:hover{text-decoration:underline;}
+
+/* ---------- Locked week ---------- */
+.week.locked .week-head{cursor:default;}
+.week.locked .week-title{color:var(--text-dim);}
+.locked-note{padding:0 16px 14px 33px; font-size:16.5px; color:var(--text-dim); font-style:italic;}
+
+/* ---------- Notes ---------- */
+.notes-wrap{padding:0 16px 16px;}
+.notes-label{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px;}
+.notes-area{
+  width:100%; min-height:56px; background:var(--bg-page); border:0.5px solid var(--border); border-radius:6px;
+  padding:9px 11px; color:var(--text-primary); font-family:var(--font-sans); font-size:17.5px; resize:vertical;
+}
+.notes-area::placeholder{color:var(--text-dim);}
+.notes-area:focus{outline:none; border-color:var(--accent-green);}
+
+/* ---------- Footer ---------- */
+.footer{max-width:920px; margin:36px auto 0; padding:0 20px; text-align:center; color:var(--text-dim); font-size:11.5px; font-family:var(--font-mono);}
+
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--bg-page);}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:14px;font-size:12px;">
+    <a href="index.html" style="color:var(--text-secondary);text-decoration:underline;">機器人週追蹤器</a>
+    <a href="overview.html" style="color:var(--text-secondary);text-decoration:underline;">機器人四年總覽</a>
+    <a href="english-log.html" style="color:var(--text-primary);font-weight:600;text-decoration:none;">英文日誌</a>
+    <a href="english-overview.html" style="color:var(--text-secondary);text-decoration:underline;">英文大綱總覽</a>
+  </div>
+  <div class="eyebrow"><span class="dot"></span>PROGRESS LOG · 電子維修 → 機器人整合英文對話計畫</div>
+  <h1>職場英文對話 · 24週維修日誌</h1>
+  <div class="subtitle">從硬體診斷背景出發，24週練到能用英文自我介紹、報告故障、講規格、談機器人整合。每天5分鐘打卡，每週五交一次「小專案」。</div>
+</div>
+
+<div class="warn">
+  <b>開機前檢查</b>　三個最容易卡關的地方，先有心理準備：① 糾結文法對不對而不敢開口——先求「講得出來」，文法之後會自然變準。② 覺得自己腔調很重——聽得懂比腔調完美重要一百倍。③ 斷了幾天就想放棄整份計畫——漏勾幾天沒關係，直接從當週接著做，不用從頭來過。
+</div>
+
+<div class="panel">
+  <div class="progress-card">
+    <div class="progress-top">
+      <div class="progress-label">Overall Progress</div>
+      <div class="progress-pct" id="overallPct">0%</div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="overallBar" style="width:0%"></div></div>
+    <div class="stage-row" id="stageRow"></div>
+  </div>
+</div>
+
+<div class="search-row">
+  <input class="search-input" id="searchBox" placeholder="搜尋關鍵字（例如：datasheet、面試、寒暄...）">
+</div>
+
+<div class="stack" id="stack">
+  <div class="trace"></div>
+</div>
+
+<div class="footer">SIGNAL: HARDWARE DIAGNOSTICS → ROBOTICS INTEGRATION · 24 WEEKS · 進度僅儲存在這個對話環境中</div>
+
+<script>
+const STAGES = [
+  {id:1, name:"發音基礎 + 技術自我介紹", weeks:"Week 1–6", color:"purple"},
+  {id:2, name:"故障描述與診斷溝通", weeks:"Week 7–12", color:"teal"},
+  {id:3, name:"技術文件與規格溝通", weeks:"Week 13–18", color:"amber"},
+  {id:4, name:"機器人整合情境", weeks:"Week 19–24", color:"coral"},
+];
+
+const RES = {
+  voicetube:{label:"VoiceTube — 中英字幕泛聽", url:"https://www.voicetube.com/"},
+  bbc:{label:"BBC Learning English — 發音與新聞英文", url:"https://www.bbc.co.uk/learningenglish"},
+  esllab:{label:"Randall's ESL Cyber Listening Lab — 分級情境聽力", url:"https://www.esl-lab.com/"},
+};
+
+const WEEKS = [
+{num:1, stage:1, milestone:false,
+ title:"Week 1：發音基礎與語感建立",
+ purpose:"這是整個計畫的起點，先不急著背句子，而是建立英文的「節奏感」——重音、語調、連音的基本感覺。這個基礎會貫穿後面23週的每一次開口，尤其是Week2的自我介紹，念起來順不順就取決於這週打的底。",
+ goal:"能抓住基本的重音位置，念一段話時聽起來有輕重起伏，不是逐字平鋪直敘。",
+ resources:["voicetube","bbc"],
+ days:[
+  {day:"週一", content:"重音節奏 (Word Stress)", example:"PHOtograph → phoTOgraphy → photoGRAPHic",
+   explanation:"**核心**：英文的重音節奏不是每個音節都同等用力，是有輕重的。同一個字根，詞性換了，重音位置也會跟著換。\n\n**練習**：對著鏡子念 `photograph / photography / photographic`，感受重音怎麼跳動，不用求快，求「有起伏」。\n\n**常見錯誤**：中文使用者習慣每個字一樣用力唸，聽起來會很像照稿念，不自然。試著把不重讀的音節唸輕唸快，重讀的音節拉長。"},
+  {day:"週二", content:"母音長短音對比", example:"ship /ɪ/ vs sheep /iː/",
+   explanation:"**核心**：英文很多字只差在母音的長短跟開合，聽起來很像但意思差很多，職場口語中容易造成誤會（例如 `live` /lɪv/ 住 vs `leave` /liːv/ 離開）。\n\n**練習**：對比唸 `sit/seat`、`full/fool`、`bit/beat`，感受嘴型跟長度的差異，不是只有音調不同。\n\n**為什麼重要**：像 `board/bored`、`fault/fold` 這類詞在維修情境很常出現，發音不準客戶可能聽錯成完全不同的意思。"},
+  {day:"週三", content:"連音與省略 (Linking & Reduction)", example:"\"What are you doing?\" 聽起來像 \"Whatcha doin'?\"",
+   explanation:"**核心**：母語者說話不會把每個字獨立分開念，字跟字之間會黏在一起、弱化。這就是為什麼你單字都認得，聽真人講話卻聽不懂——不是單字不夠，是還沒抓到連音規則。\n\n**練習**：`check it out` 唸起來像 `che-ki-tout`；`turn it off` 唸起來像 `tur-ni-toff`。試著唸快一點，感受子音連到下一個母音上。\n\n**常見錯誤**：不用刻意學所有連音規則，重點是「聽的時候」要有心理準備——句子聽起來會黏在一起是正常的，不是你程度不夠。"},
+  {day:"週四", content:"語調與情緒 (Intonation)", example:"\"Really?\"（上揚＝驚訝）vs \"Really.\"（下降＝了解）",
+   explanation:"**核心**：同一個字，語調往上還是往下，聽起來的態度完全不同。職場對話中語調比文法更容易被誤解——文法全對但語調平板，可能被誤會成不耐煩。\n\n**練習**：練習用不同語調唸 `OK`、`Sure`、`I see`，分別唸出「真心同意」「敷衍」「疑惑」三種感覺，錄下來自己聽聽看差在哪。\n\n**為什麼重要**：之後Week11要學「委婉表達不同意」，語調沒練好，句子會聽起來比你想表達的更衝。"},
+  {day:"週五【小專案】", content:"錄一段自我介紹（先求節奏對，不求句子完美）", example:"Hi, I'm [Name]. I work as an electronics repair technician.",
+   explanation:"**這天要做什麼**：把前四天學的重音、母音、連音、語調全部用在一段30秒的話裡。內容不用完整（Week2才正式教自我介紹句型），先挑幾句簡單的反覆錄音、重播、調整。\n\n**評分重點不是文法對不對，是「聽起來像不像英文」**——這是這階段最重要的心態轉換。",
+   dialogue:"Hi, I'm [你的名字]. I work as an electronics repair technician. I mainly work on PCB and BGA-level repair. I'm currently learning more about robotics integration."}
+ ]},
+
+{num:2, stage:1, milestone:false,
+ title:"Week 2：自我介紹句型",
+ purpose:"承接Week1練好的重音跟語調節奏，這週開始填入實際內容——怎麼用一段完整的英文說出「我是誰、我做什麼」。這是第一個真的能在職場用上的句型組，也是Week6里程碑錄音的骨架。",
+ goal:"能不看稿，流暢說出30秒的技術背景自我介紹。",
+ days:[
+  {day:"週一", content:"基本句型架構：姓名＋職稱＋領域", example:"\"I work as an electronics repair technician, specializing in PCB and BGA-level diagnostics.\"",
+   explanation:"**核心句型**：`I work as a/an [職稱], specializing in [專長領域]`。`specializing in` 是職場自我介紹的萬用句型，後面接名詞或動名詞都可以。\n\n**常見錯誤**：不要說 `I am doing electronics repair job`，這是中式直譯，聽起來不自然。母語者會直接用職稱名詞：`I work as a technician`。\n\n**為什麼重要**：這句是你接下來所有自我介紹、面試、跟客戶開場的骨幹句型，記熟公式，換內容就能套用到任何場合。"},
+  {day:"週二", content:"描述年資：現在完成式", example:"\"I've been working in hardware repair for about 15 years.\"",
+   explanation:"**核心**：講「做了多久」要用現在完成式 `have/has been + Ving`，不是過去式。過去式聽起來像「這件事已經結束了」，但你現在還在做，要用完成式表達「從過去持續到現在」。\n\n**常見錯誤**：很多人說 `I did this job for 15 years`，聽起來像已經離職了。改成 `I've been doing this for 15 years` 才對。\n\n**跟Week1的連結**：這句重音落在 `working` 跟 `fifteen years`，記得語調要有起伏。"},
+  {day:"週三", content:"描述轉型方向：現在進行式", example:"\"I'm currently transitioning into robotics integration, building on my hardware diagnostics background.\"",
+   explanation:"**核心**：`I'm currently -ing` 表達「現在正在做、還沒完成」的狀態，適合描述你正在轉型這件事——這是你整個學習敘事的核心句子。\n\n**片語重點**：`building on [基礎]` 意思是「以...為基礎、延伸發展」，適合把硬體背景包裝成優勢，而不是要拋棄它。\n\n**常見錯誤**：不要說 `I want to change to robot job`，聽起來像要放棄現在的專長重新開始。"},
+  {day:"週四", content:"常見誤區總整理", example:"❌ \"My English is not good, sorry.\" → ✅ 直接開始講內容",
+   explanation:"**核心**：這天專門抓錯。台灣人自我介紹最常見的三個地雷：\n\n1. 開場先道歉英文不好——不要這樣做，會讓對方對你的內容打折扣。\n2. 把中文語序直接套用，例如 `I am 15 years have this experience`。\n3. 職稱翻譯太字面，例如把「維修技師」翻成 `repair master`，正確說法是 `repair technician`。\n\n**練習**：把你原本想講的中文稿拿出來，檢查有沒有踩到這三個雷。"},
+  {day:"週五【小專案】", content:"完整30秒自我介紹錄音", example:"串接週一到週四學的四個句型",
+   explanation:"**這天要做什麼**：把本週四天的句型串起來，錄一段完整、不看稿的30秒自我介紹。這段內容會在Week6直接升級使用，現在打好底稿，之後只要加深就好。",
+   dialogue:"Hi, I'm [Name]. I work as an electronics repair technician, specializing in PCB and BGA-level diagnostics. I've been working in hardware repair for about 15 years, mostly in telecom and networking equipment. I'm currently transitioning into robotics integration, building on my hardware diagnostics background."}
+ ]},
+
+{num:3, stage:1, milestone:false,
+ title:"Week 3：描述工作經歷",
+ purpose:"Week2打好了「我是誰」的骨架，這週往下鑽，練習具體描述做過哪些案子、遇過什麼設備——這是Week7開始的故障描述會直接用到的敘事能力，先把「怎麼講一段完整經歷」的句型練熟。",
+ goal:"能用完整段落描述一項具體的維修經歷，不是只有單句。",
+ days:[
+  {day:"週一", content:"常見電信網通設備詞彙", example:"base station equipment, network switches, transmission units",
+   explanation:"**核心**：先把你每天在講的設備類型換成英文詞彙。`base station`（基地台）、`network switch`（網路交換器）、`transmission unit`（傳輸設備）。\n\n**練習**：把你手邊實際維修過的三種設備寫出中文，查出對應英文詞彙，比死背單字表有效多了。"},
+  {day:"週二", content:"用時間子句鋪陳情境", example:"\"When I was working on a batch of network switches last year, I noticed a recurring power issue.\"",
+   explanation:"**核心句型**：`When I was -ing..., I noticed/found...`，這是敘事型英文最常用的開場公式，先鋪陳時間背景，讓對方知道這是什麼情境下發生的事。\n\n**常見錯誤**：不要一開口就丟結論，母語者聽故事習慣先有背景鋪陳，太快跳結論反而讓人聽不懂脈絡。這在Week10會更深入練。"},
+  {day:"週三", content:"描述採取的行動：動作動詞組", example:"I isolated the fault, replaced the component, and verified the fix.",
+   explanation:"**核心**：描述「你做了什麼」要用具體動詞。`isolate the fault`（定位故障）、`replace the component`（更換元件）、`verify the fix`（驗證修復結果）——這三個動詞組是維修敘事的黃金三步驟，之後每次講案例都可以套用。\n\n**跟Week8的連結**：這週先學怎麼講，Week8會更深入教診斷過程本身怎麼用英文表達邏輯推理。"},
+  {day:"週四", content:"常見誤區：動詞時態混用", example:"❌ \"I isolate the fault, then I am replacing it\" → ✅ \"I isolated the fault, then replaced it.\"",
+   explanation:"**核心**：講一段過去發生的維修經歷，動詞要全部維持過去式，不要中途切換成現在式或進行式，這是最常見的破綻，會讓母語者很吃力去猜你到底在講現在還是過去。\n\n**練習**：把週二、週三的句子串起來，檢查每個動詞是不是都是過去式。"},
+  {day:"週五【小專案】", content:"完整案例經歷口述（一分鐘）", example:"背景鋪陳 → 採取行動 → 結果，三段式結構",
+   explanation:"**這天要做什麼**：挑一個你真正處理過的故障案例，用「背景→行動→結果」三段式結構講一分鐘。這個結構會在Week12的完整故障報告里程碑直接升級使用。",
+   dialogue:"Last year, I was working on a batch of network switches, and I noticed a recurring power issue. Several units kept rebooting under load. I isolated the fault to a failing capacitor on the power board, replaced the component, and verified the fix by running a 48-hour stress test. After that, we didn't see the issue again."}
+ ]},
+
+{num:4, stage:1, milestone:false,
+ title:"Week 4：描述專長與強項",
+ purpose:"前三週練了自我介紹跟經歷敘事，這週更進一步——具體說出你跟純軟體背景的人差在哪，這是你職涯定位的核心賣點，也是Week20跨部門溝通的前導。",
+ goal:"能具體說明自己的差異化優勢，不是只說「我很有經驗」這種空話。",
+ days:[
+  {day:"週一", content:"比較句型：Unlike...", example:"\"Unlike a lot of integration engineers, I can actually diagnose hardware-level issues, not just software configuration.\"",
+   explanation:"**核心句型**：`Unlike [對照對象], I can...`，很適合突顯差異化，比單純說 `I'm good at hardware` 更有說服力，因為直接點出「別人可能做不到但你可以」的地方。\n\n**為什麼重要**：這是你整個轉型故事的核心賣點——機器人整合領域軟體背景的人很多，同時懂硬體診斷的人少，這句型要練到能不假思索脫口而出。"},
+  {day:"週二", content:"用具體例子支撐主張", example:"\"For example, when a robot arm behaves erratically, I can tell whether it's a wiring issue, a sensor fault, or a software bug.\"",
+   explanation:"**核心**：光說「我很厲害」沒有說服力，母語者的邏輯是先講結論，再舉一個具體例子撐住結論。`For example,...` 後面接一個具體情境，讓對方腦中有畫面。\n\n**常見錯誤**：例子不要講得太長太細，一句話講完情境跟你的判斷力就好，太多技術細節反而模糊焦點。"},
+  {day:"週三", content:"誠實但有自信地承認不足", example:"\"I'm still building up my software and ROS experience, but the hardware diagnostics side is where I can contribute from day one.\"",
+   explanation:"**核心**：轉型過程中，誠實講出還在學的部分反而更可信，但講法要有技巧——`still building up` 比 `I don't know much about` 積極多了，後半句要立刻接一句「但我現在就能貢獻的地方是...」，把弱點包裝成階段性而不是永久缺陷。\n\n**跟Week23的連結**：這句型會在模擬面試那週整段升級使用。"},
+  {day:"週四", content:"常見誤區：過度謙虛 vs 過度自誇", example:"❌ \"I'm not really an expert, just a bit of experience\" → ✅ \"I bring 15 years of hands-on diagnostics experience\"",
+   explanation:"**核心**：華人文化習慣自我介紹時謙虛帶過，但這在英文職場情境容易被解讀成沒自信、能力不足。不用浮誇，但要直接陳述事實，讓數字跟具體經驗說話，不要加一堆「可能」「一點點」這類弱化詞。"},
+  {day:"週五【小專案】", content:"「我的差異化優勢」完整口述（45秒）", example:"主張 → 具體例子 → 誠實但自信的補充",
+   explanation:"**這天要做什麼**：把本週三個句型串成完整一段，這段內容之後會直接併入Week6的自我介紹升級版，也是Week23模擬面試的核心素材。",
+   dialogue:"Unlike a lot of integration engineers, I can actually diagnose hardware-level issues, not just software configuration. For example, when a robot arm behaves erratically, I can tell whether it's a wiring issue, a sensor fault, or a software bug — most integrators would just assume it's software. I'm still building up my software and ROS experience, but the hardware diagnostics side is where I can contribute from day one."}
+ ]},
+
+{num:5, stage:1, milestone:false,
+ title:"Week 5：職場寒暄與小聊",
+ purpose:"前四週都在練準備好的內容，這週刻意練沒有固定腳本的即興小聊——因為職場英文不是只有正式報告，茶水間閒聊、會議前的寒暄，反而是建立關係的關鍵，也是Week6里程碑裡臨場回答追問的暖身。",
+ goal:"能自然接話延續3-4輪對話，不冷場。",
+ resources:["esllab"],
+ days:[
+  {day:"週一", content:"開場寒暄句型", example:"\"How's it going?\" / \"Long time no see!\" / \"Busy week?\"",
+   explanation:"**核心**：這些是打招呼的「整句記憶」，不要拆開單字背，`How's it going?` 就是一個完整單位，回答通常是 `Pretty good, you?` 或 `Can't complain.`，練熟就能反射性回應。\n\n**練習**：整句背誦原則在這裡最適用——不要逐字翻譯，直接背整組問答。"},
+  {day:"週二", content:"延續話題的追問句", example:"\"Oh really? What happened?\" / \"That sounds tough. How did you handle it?\"",
+   explanation:"**核心**：閒聊卡住通常不是聽不懂，是不知道怎麼接下一句。準備3-5句萬用追問句，對方講什麼都能接得上：`Oh really?`、`How come?`、`What happened next?` 這類句子適用度極高，先練到滾瓜爛熟。"},
+  {day:"週三", content:"禮貌結束對話", example:"\"Anyway, I should get back to it — talk later!\"",
+   explanation:"**核心**：閒聊也要學會怎麼優雅收尾，不然容易卡在不知道怎麼結束的尷尬。`Anyway, I should...` 是最自然的轉場詞，後面接你要去做的事，就能順勢結束對話。\n\n**常見錯誤**：不要突然沉默或直接說 `bye`，這在英語文化裡會顯得唐突，加一句過渡語會自然很多。"},
+  {day:"週四", content:"話題地雷與安全話題", example:"安全：天氣、週末計畫、興趣 ／ 少碰：薪水、政治、宗教",
+   explanation:"**核心**：這天講文化眉角。西方職場小聊有些話題是地雷區（薪水、政治、宗教、外貌評論），安全的話題是天氣、週末計畫、興趣嗜好、最近看的影集。先知道地雷在哪，比會講什麼句型更重要。"},
+  {day:"週五【小專案】", content:"模擬三輪即興對話（不用腳本）", example:"找一個情境（電梯裡遇到同事），練習開場→延續→收尾",
+   explanation:"**這天要做什麼**：這是本階段第一次沒有固定腳本的練習——只給你一個情境，你要即興應對。這正是Week6里程碑會考的能力：臨場反應而不是背好的稿子。",
+   dialogue:"A: Hey, how's it going?\nB: Pretty good, just been busy with a few projects. You?\nA: Same here. Anyway, I should get back to it — talk later!\nB: Sounds good, catch you later!"}
+ ]},
+
+{num:6, stage:1, milestone:true,
+ title:"Week 6【總里程碑】完整自我介紹口頭報告",
+ purpose:"這是第一階段的整合週，把Week2的自我介紹骨架、Week3的經歷敘事、Week4的差異化優勢、Week5的即興應對能力全部合併成一段完整、有結構、能臨場應答的自我介紹。這段內容會是之後23週所有場合的萬用開場。",
+ goal:"錄一段90秒完整自我介紹，並能臨場回答至少一個追問，不看稿。",
+ days:[
+  {day:"週一", content:"整合草稿：合併前四週內容", example:"自我介紹 + 經歷案例 + 差異化優勢，三段合併",
+   explanation:"**這天要做什麼**：不學新句型，專心把前四週的四段錄音稿拿出來，抓重點合併成一段90秒左右的完整版本，太長要刪減，只留最有力的部分。"},
+  {day:"週二", content:"練習轉場銜接", example:"\"On top of that,...\" / \"Which brings me to...\"",
+   explanation:"**核心**：四段內容硬接在一起會很生硬，需要過渡語讓它們聽起來是一段完整的話而不是四個句子拼接。`On top of that`（再加上）、`Which brings me to`（這也讓我想到）是很好用的橋接詞。"},
+  {day:"週三", content:"預想追問並準備回答", example:"\"What made you decide to move into robotics?\" / \"What's the biggest challenge you've faced?\"",
+   explanation:"**核心**：面試/自我介紹後最常見的追問就這幾種，提前想好簡短回答（不用長篇大論，30秒內講完），可以直接借用Week4練的「誠實但自信」句型架構。"},
+  {day:"週四", content:"完整彩排 + 抓時間", example:"錄音、聽回放、修剪冗詞",
+   explanation:"**核心**：90秒是職場自我介紹的黃金長度，太短顯得內容空洞，太長會讓人失去耐性。這天專門練刪減——把不必要的贅字拿掉，留下最有力的句子。"},
+  {day:"週五【總里程碑交付】", content:"完整錄音 + 回答一個追問", example:"錄下完整90秒自介，並模擬回答一個追問問題",
+   explanation:"**這是第一階段的畢業考**：錄一段完整、不看稿的90秒自我介紹，接著自問自答一個週三準備的追問。完成這個，代表你已經具備職場自我介紹這個場景的完整應對能力，可以進入第二階段——故障描述與診斷溝通。",
+   dialogue:"Hi, I'm [Name]. I work as an electronics repair technician, specializing in PCB and BGA-level diagnostics, with about 15 years of experience in telecom and networking equipment. For example, last year I isolated a recurring power issue in a batch of network switches down to a failing capacitor — the kind of hardware-level diagnosis that's easy to miss if you're only looking at it from a software angle. I'm currently transitioning into robotics integration, building on that hardware background. Unlike a lot of integration engineers, I can diagnose whether an issue is wiring, a sensor fault, or software — and I'm still building up my ROS and software experience, but the hardware diagnostics side is where I can contribute from day one.\n\nQ: What made you decide to move into robotics?\nA: Honestly, I saw where the industry's heading, and I wanted to apply what I already do well — hardware diagnostics — to a field that's still figuring out how to combine hardware and software reliably."}
+ ]},
+
+/* ---- Stage 2: Week 7-12 (roadmap only, detail coming next batch) ---- */
+{num:7, stage:2, milestone:false, title:"Week 7：描述故障現象", purpose:"進入第二階段，開始練最貼近你日常工作的內容：怎麼準確描述一個故障現象，不含糊帶過。", goal:"能準確描述症狀，句型如 keeps rebooting、intermittent fault。", days:null},
+{num:8, stage:2, milestone:false, title:"Week 8：描述診斷步驟", purpose:"承接Week7的症狀描述，這週練怎麼交代『我是怎麼查到問題的』診斷過程。", goal:"能用英文交代用示波器/三用電表排查的邏輯過程。", days:null},
+{num:9, stage:2, milestone:false, title:"Week 9：描述根本原因", purpose:"從症狀推進到根因，練習因果連接詞跟 root cause 相關句型。", goal:"能區分症狀跟原因的英文表達方式。", days:null},
+{num:10, stage:2, milestone:false, title:"Week 10：口頭回報維修結果", purpose:"把前三週學的症狀、過程、原因整合成一段簡短的口頭回報。", goal:"能在1分鐘內講完問題、解法、結果。", days:null},
+{num:11, stage:2, milestone:false, title:"Week 11：預估工時與資源需求", purpose:"練習委婉但明確地表達時間跟資源需求，這需要用到Week1學的語調技巧。", goal:"能禮貌但明確地爭取時間或資源。", days:null},
+{num:12, stage:2, milestone:true, title:"Week 12【里程碑】完整故障報告模擬", purpose:"第二階段整合週，把症狀、診斷、原因、回報、資源需求全部串成一段完整案例報告。", goal:"錄一段完整案例報告並回答2個追問。", days:null},
+
+/* ---- Stage 3: Week 13-18 (roadmap only) ---- */
+{num:13, stage:3, milestone:false, title:"Week 13：讀懂英文Datasheet重點", purpose:"進入第三階段，先練閱讀能力——怎麼在英文規格書裡快速定位關鍵資訊。", goal:"能快速定位規格書中的關鍵數字跟段落。", days:null},
+{num:14, stage:3, milestone:false, title:"Week 14：口頭轉述規格重點", purpose:"承接Week13的閱讀能力，這週練怎麼把讀到的規格用自己的話講給同事聽。", goal:"能不照本宣科地轉述技術資訊。", days:null},
+{num:15, stage:3, milestone:false, title:"Week 15：描述通訊協定/介面規格", purpose:"結合你熟悉的工業通訊協定背景，練習說明協定差異與適用場景。", goal:"能說明協定差異與適用場景。", days:null},
+{num:16, stage:3, milestone:false, title:"Week 16：會議中確認需求", purpose:"練習委婉的確認問法，避免會議中誤解需求。", goal:"能在會議中禮貌打斷並確認理解。", days:null},
+{num:17, stage:3, milestone:false, title:"Week 17：Email技術溝通", purpose:"把口說句型轉換成書面表達，練習技術Email的開頭跟結尾常用句。", goal:"能寫出簡潔清楚的技術Email。", days:null},
+{num:18, stage:3, milestone:true, title:"Week 18【里程碑】規格說明模擬會議", purpose:"第三階段整合週，模擬跟國外供應商確認規格的完整會議情境。", goal:"完成一段情境對話並整理Email摘要。", days:null},
+
+/* ---- Stage 4: Week 19-24 (roadmap only) ---- */
+{num:19, stage:4, milestone:false, title:"Week 19：描述系統整合流程", purpose:"進入第四階段，開始練直接對應機器人整合工作的內容：描述安裝、接線、除錯的完整流程。", goal:"能描述完整整合流程的步驟順序。", days:null},
+{num:20, stage:4, milestone:false, title:"Week 20：硬體限制的溝通", purpose:"練習跟軟體工程師解釋硬體限制，這是你差異化優勢（Week4）的實戰應用。", goal:"能用對方聽得懂的方式解釋硬體限制。", days:null},
+{num:21, stage:4, milestone:false, title:"Week 21：跨部門/跨國協作用語", purpose:"練習委婉表達分工、進度落差，避免跨團隊溝通產生摩擦。", goal:"能在團隊溝通中不失禮地表達困難。", days:null},
+{num:22, stage:4, milestone:false, title:"Week 22：談判與爭取資源", purpose:"承接Week11的資源需求表達，這週進階練設備採購/預算相關的談判句型。", goal:"能有條理地提出需求並說明理由。", days:null},
+{num:23, stage:4, milestone:false, title:"Week 23：模擬面試準備", purpose:"把Week4的差異化優勢敘事升級，組織成一段完整、有說服力的職涯定位故事。", goal:"能組織出一段有說服力的自我定位敘事。", days:null},
+{num:24, stage:4, milestone:true, title:"Week 24【總里程碑】完整模擬面試", purpose:"整個計畫的畢業考，完整模擬機器人整合職位面試，涵蓋前23週所有重點句型。", goal:"錄一段完整面試問答，涵蓋前23週重點句型。", days:null},
+];
+
+/* ---------- storage (window.storage with in-memory fallback) ---------- */
+let STORE = {};
+let storageReady = false;
+async function loadStore(){
+  try{
+    const r = await window.storage.get('progress-and-notes', false);
+    if(r && r.value) STORE = JSON.parse(r.value);
+  }catch(e){ /* no saved state yet, or storage unavailable */ }
+  storageReady = true;
+}
+async function saveStore(){
+  try{ await window.storage.set('progress-and-notes', JSON.stringify(STORE), false); }catch(e){ /* in-memory only this session */ }
+}
+function dayKey(w,i){ return 'd-'+w+'-'+i; }
+function noteKey(w){ return 'n-'+w; }
+
+/* ---------- mdLite renderer ---------- */
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function mdLite(text){
+  if(!text) return '';
+  const blocks = [];
+  let t = text.replace(/```([\s\S]*?)```/g, (m,code)=>{
+    blocks.push('<pre>'+escapeHtml(code.trim())+'</pre>');
+    return '\u0000'+(blocks.length-1)+'\u0000';
+  });
+  t = escapeHtml(t);
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\n\n/g, '</p><p>');
+  t = '<p>'+t+'</p>';
+  t = t.replace(/\u0000(\d+)\u0000/g, (m,idx)=>blocks[idx]);
+  return t;
+}
+
+/* ---------- render ---------- */
+const stack = document.getElementById('stack');
+const collapsedStages = new Set();
+
+function computeStageStats(){
+  const stats = {};
+  STAGES.forEach(s=>stats[s.id]={total:0,done:0});
+  WEEKS.forEach(w=>{
+    if(!w.days) return;
+    w.days.forEach((d,i)=>{
+      stats[w.stage].total++;
+      if(STORE[dayKey(w.num,i)]) stats[w.stage].done++;
+    });
+  });
+  return stats;
+}
+
+function renderProgress(){
+  const stats = computeStageStats();
+  let totalAll=0, doneAll=0;
+  document.getElementById('stageRow').innerHTML = STAGES.map(s=>{
+    const st = stats[s.id];
+    totalAll += st.total; doneAll += st.done;
+    const pct = st.total ? Math.round(st.done/st.total*100) : 0;
+    return `<div class="stage-mini" data-stage="${s.id}">
+      <div class="s-name">${s.weeks}</div>
+      <div class="s-pct" style="color:var(--p-${s.color}-fg)">${pct}%</div>
+    </div>`;
+  }).join('');
+  const overallPct = totalAll ? Math.round(doneAll/totalAll*100) : 0;
+  document.getElementById('overallPct').textContent = overallPct+'%';
+  document.getElementById('overallBar').style.width = overallPct+'%';
+  document.querySelectorAll('.stage-mini').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const sid = parseInt(el.dataset.stage);
+      const block = document.querySelector('.stage-block[data-stage="'+sid+'"]');
+      if(block){ collapsedStages.delete(sid); render(); block.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+}
+
+function weekStatus(w){
+  if(!w.days) return 'locked';
+  const total = w.days.length;
+  let done = 0;
+  w.days.forEach((d,i)=>{ if(STORE[dayKey(w.num,i)]) done++; });
+  if(done===0) return 'none';
+  if(done===total) return 'done';
+  return 'partial';
+}
+
+function render(filterText){
+  const q = (filterText||'').trim().toLowerCase();
+  let html = '<div class="trace"></div>';
+
+  STAGES.forEach(stage=>{
+    let weeks = WEEKS.filter(w=>w.stage===stage.id);
+    if(q){
+      weeks = weeks.filter(w=>{
+        const hay = [w.title, w.purpose, w.goal].join(' ').toLowerCase() +
+          (w.days ? w.days.map(d=>d.content+' '+d.example+' '+d.explanation).join(' ').toLowerCase() : '');
+        return hay.includes(q);
+      });
+      if(weeks.length===0) return;
+    }
+    const isCollapsed = collapsedStages.has(stage.id) && !q;
+    html += `<div class="stage-block ${isCollapsed?'collapsed':''}" data-stage="${stage.id}">
+      <div class="stage-header" data-toggle-stage="${stage.id}">
+        <div class="stage-node" style="background:var(--p-${stage.color}-fg); color:#fff; border-color:var(--bg-page);">${stage.id}</div>
+        <div>
+          <h2>${stage.name}</h2>
+          <div class="s-sub">${stage.weeks}</div>
+        </div>
+        <div class="stage-caret">▾</div>
+      </div>
+      <div class="stage-body">`;
+
+    weeks.forEach(w=>{
+      const status = weekStatus(w);
+      const ledClass = status==='done'?'done':(status==='partial'?'partial':'');
+      const locked = !w.days;
+      html += `<div class="week ${locked?'locked':''}" data-week="${w.num}">
+        <div class="week-head" data-toggle-week="${w.num}">
+          <div class="led ${ledClass}"></div>
+          <div class="week-title">${w.title}</div>
+          ${w.milestone?'<div class="week-milestone-tag">里程碑</div>':''}
+          ${!locked?'<div class="week-caret">▾</div>':''}
+        </div>
+        <div class="week-purpose">${escapeHtml(w.purpose)}</div>
+        <div class="week-goal"><strong style="color:var(--text-primary)">本週目標：</strong>${escapeHtml(w.goal)}</div>`;
+
+      if(locked){
+        html += `<div class="locked-note">內容製作中 — 目前完成到 Week 6，之後會按階段陸續補上（下一批：Week 7–12）。</div>`;
+      } else {
+        html += `<div class="days">`;
+        w.days.forEach((d,i)=>{
+          const checked = STORE[dayKey(w.num,i)] ? 'checked' : '';
+          html += `<div class="day">
+            <div class="day-row">
+              <input type="checkbox" class="day-check" data-week="${w.num}" data-day="${i}" ${checked}>
+              <div class="day-main">
+                <div class="day-label-row" data-toggle-day="${w.num}-${i}">
+                  <span class="day-name">${d.day}</span>
+                </div>
+                <div class="day-content" data-toggle-day="${w.num}-${i}" style="cursor:pointer">${escapeHtml(d.content)}</div>
+                <div class="day-example">${escapeHtml(d.example)}</div>
+                <span class="day-toggle" data-toggle-day="${w.num}-${i}">展開完整教學 ▾</span>
+                <div class="explanation" id="exp-${w.num}-${i}">${mdLite(d.explanation)}</div>
+                ${d.dialogue ? `<span class="day-toggle" data-toggle-dlg="${w.num}-${i}">展開完整範例對話 ▾</span><div class="dialogue-box" id="dlg-${w.num}-${i}">${escapeHtml(d.dialogue)}</div>` : ''}
+              </div>
+            </div>
+          </div>`;
+        });
+        html += `</div>`;
+        if(w.resources){
+          html += `<div class="resources"><div class="resources-label">本週延伸聽力</div>`;
+          w.resources.forEach(rid=>{
+            const r = RES[rid];
+            html += `<a class="res-link" href="${r.url}" target="_blank" rel="noopener">↗ ${r.label}</a>`;
+          });
+          html += `</div>`;
+        }
+        html += `<div class="notes-wrap"><div class="notes-label">卡關記錄 / 心得</div>
+          <textarea class="notes-area" data-notes="${w.num}" placeholder="這週卡在哪裡？學到什麼？寫下來下次回顧用...">${escapeHtml(STORE[noteKey(w.num)]||'')}</textarea></div>`;
+      }
+      html += `</div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  stack.innerHTML = html;
+  attachHandlers();
+  renderProgress();
+}
+
+function attachHandlers(){
+  document.querySelectorAll('[data-toggle-stage]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const sid = parseInt(el.dataset.toggleStage);
+      if(collapsedStages.has(sid)) collapsedStages.delete(sid); else collapsedStages.add(sid);
+      render(document.getElementById('searchBox').value);
+    });
+  });
+  document.querySelectorAll('[data-toggle-week]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const wrap = el.closest('.week');
+      if(wrap.classList.contains('locked')) return;
+      wrap.classList.toggle('open');
+    });
+  });
+  document.querySelectorAll('[data-toggle-day]').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const key = el.dataset.toggleDay;
+      document.getElementById('exp-'+key).classList.toggle('open');
+    });
+  });
+  document.querySelectorAll('[data-toggle-dlg]').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const key = el.dataset.toggleDlg;
+      document.getElementById('dlg-'+key).classList.toggle('open');
+    });
+  });
+  document.querySelectorAll('.day-check').forEach(el=>{
+    el.addEventListener('click', (e)=>e.stopPropagation());
+    el.addEventListener('change', async ()=>{
+      const w = el.dataset.week, i = el.dataset.day;
+      STORE[dayKey(w,i)] = el.checked;
+      await saveStore();
+      render(document.getElementById('searchBox').value);
+    });
+  });
+  document.querySelectorAll('.notes-area').forEach(el=>{
+    el.addEventListener('click', (e)=>e.stopPropagation());
+    let timer;
+    el.addEventListener('input', ()=>{
+      clearTimeout(timer);
+      timer = setTimeout(async ()=>{
+        STORE[noteKey(el.dataset.notes)] = el.value;
+        await saveStore();
+      }, 500);
+    });
+  });
+}
+
+document.getElementById('searchBox').addEventListener('input', (e)=>{
+  render(e.target.value);
+});
+
+(async function init(){
+  await loadStore();
+  render();
+})();
+</script>
+</body>
+</html>
