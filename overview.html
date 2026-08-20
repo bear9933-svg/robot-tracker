@@ -73,9 +73,63 @@
   .final-box .ft{font-size:14px; font-weight:500; margin-bottom:6px;}
   .final-box .fb{font-size:13px; color:var(--text-secondary); line-height:1.7;}
   .final-box .fb b{color:var(--text-primary); font-weight:500;}
+
+.branch-nav{
+  --nav-bg:#FFFFFF; --nav-border:#E3E1D8; --nav-text:#1F1E1B;
+  --nav-text-dim:#6B6960; --nav-current-bg:#F1EFE8;
+}
+@media (prefers-color-scheme: dark){
+  .branch-nav{
+    --nav-bg:#242219; --nav-border:#3A3830; --nav-text:#F2F1EA;
+    --nav-text-dim:#B4B2A9; --nav-current-bg:#1D1C15;
+  }
+}
+.branch-nav{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-size:13px; background:var(--nav-bg); border-right:0.5px solid var(--nav-border);
+  padding:20px 14px; box-sizing:border-box;
+}
+.branch-nav .branch-group{margin-bottom:18px;}
+.branch-nav .branch-title{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--nav-text);margin-bottom:8px;}
+.branch-nav .branch-items{list-style:none;margin:0;padding:0;border-left:1px solid var(--nav-border);margin-left:6px;}
+.branch-nav .branch-items li{position:relative;padding:5px 0 5px 16px;}
+.branch-nav .branch-items li::before{content:"";position:absolute;left:-1px;top:14px;width:12px;height:1px;background:var(--nav-border);}
+.branch-nav .branch-items a{color:var(--nav-text-dim);text-decoration:none;display:block;padding:4px 8px;border-radius:6px;}
+.branch-nav .branch-items a:hover{background:var(--nav-current-bg);}
+.branch-nav .branch-items a.current{color:var(--nav-text);font-weight:600;background:var(--nav-current-bg);}
+@media (min-width:761px){
+  .branch-nav{position:fixed;top:0;left:0;bottom:0;width:190px;overflow-y:auto;z-index:100;}
+  body{padding-left:190px;}
+}
+@media (max-width:760px){
+  .branch-nav{border-right:none;border-bottom:0.5px solid var(--nav-border);padding:14px;position:static;}
+  .branch-nav .branch-group{margin-bottom:10px;}
+  .branch-nav .branch-items{display:flex;flex-wrap:wrap;gap:4px;border-left:none;margin-left:0;}
+  .branch-nav .branch-items li{padding:0;}
+  .branch-nav .branch-items li::before{display:none;}
+  .branch-nav .branch-items a{padding:4px 10px;border:0.5px solid var(--nav-border);border-radius:14px;}
+}
+
 </style>
 </head>
 <body>
+<nav class="branch-nav">
+  <div class="branch-group">
+    <div class="branch-title"><span class="icon">📁</span>機器人學習主線</div>
+    <ul class="branch-items">
+      <li><a href="overview.html" class="current">四年計畫總覽</a></li>
+      <li><a href="index.html">週進度追蹤器</a></li>
+    </ul>
+  </div>
+  <div class="branch-group">
+    <div class="branch-title"><span class="icon">📁</span>英文學習支線</div>
+    <ul class="branch-items">
+      <li><a href="english-overview.html">大綱總覽</a></li>
+      <li><a href="english-log.html">24週日誌</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="wrap">
   <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px;font-size:12px;">
     <a href="index.html" style="color:var(--text-secondary);text-decoration:underline;">機器人週追蹤器</a>
