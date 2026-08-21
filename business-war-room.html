@@ -149,14 +149,15 @@ a{color:inherit;}
 .cat-head .cx{font-size:10px; color:var(--text-mute); transition:transform .2s;}
 .cat-group.collapsed .cx{transform:rotate(-90deg);}
 .cat-group.collapsed .cat-list{display:none;}
-.cat-list{padding:2px 0 10px 6px; border-left:1px solid var(--border-soft); margin-left:19px; display:flex; flex-direction:column; gap:1px;}
+.cat-list{padding:2px 0 10px 6px; border-left:1px solid var(--border-soft); margin-left:19px; display:flex; flex-direction:column; gap:3px;}
 .nav-item{
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:flex-start; gap:8px;
   padding:7px 10px; border-radius:8px; cursor:pointer;
-  font-size:13px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:13px; color:var(--text-dim);
   border:1px solid transparent;
 }
-.nav-item .ni{font-size:13px; flex:none;}
+.nav-item .ni{font-size:13px; flex:none; line-height:1.5;}
+.nav-item .nt{white-space:normal; overflow-wrap:break-word; line-height:1.5;}
 .nav-item:hover{background:var(--card); color:var(--text);}
 .nav-item.active{background:var(--accent-dim); color:var(--accent); border-color:var(--accent-border); font-weight:600;}
 
