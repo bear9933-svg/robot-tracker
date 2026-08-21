@@ -554,6 +554,9 @@ function mdLite(text){
 /* ---------- render ---------- */
 const stack = document.getElementById('stack');
 const collapsedStages = new Set();
+const openWeeks = new Set();
+const openExplanations = new Set();
+const openDialogues = new Set();
 
 function computeStageStats(){
   const stats = {};
@@ -632,7 +635,7 @@ function render(filterText){
       const status = weekStatus(w);
       const ledClass = status==='done'?'done':(status==='partial'?'partial':'');
       const locked = !w.days;
-      html += `<div class="week ${locked?'locked':''}" data-week="${w.num}">
+      html += `<div class="week ${locked?'locked':''} ${openWeeks.has(w.num)?'open':''}" data-week="${w.num}">
         <div class="week-head" data-toggle-week="${w.num}">
           <div class="led ${ledClass}"></div>
           <div class="week-title">${w.title}</div>
@@ -658,8 +661,8 @@ function render(filterText){
                 <div class="day-content" data-toggle-day="${w.num}-${i}" style="cursor:pointer">${escapeHtml(d.content)}</div>
                 <div class="day-example">${escapeHtml(d.example)}</div>
                 <span class="day-toggle" data-toggle-day="${w.num}-${i}">展開完整教學 ▾</span>
-                <div class="explanation" id="exp-${w.num}-${i}">${mdLite(d.explanation)}</div>
-                ${d.dialogue ? `<span class="day-toggle" data-toggle-dlg="${w.num}-${i}">展開完整範例對話 ▾</span><div class="dialogue-box" id="dlg-${w.num}-${i}">${escapeHtml(d.dialogue)}</div>` : ''}
+                <div class="explanation ${openExplanations.has(w.num+'-'+i)?'open':''}" id="exp-${w.num}-${i}">${mdLite(d.explanation)}</div>
+                ${d.dialogue ? `<span class="day-toggle" data-toggle-dlg="${w.num}-${i}">展開完整範例對話 ▾</span><div class="dialogue-box ${openDialogues.has(w.num+'-'+i)?'open':''}" id="dlg-${w.num}-${i}">${escapeHtml(d.dialogue)}</div>` : ''}
               </div>
             </div>
           </div>`;
@@ -699,6 +702,8 @@ function attachHandlers(){
     el.addEventListener('click', ()=>{
       const wrap = el.closest('.week');
       if(wrap.classList.contains('locked')) return;
+      const wnum = parseInt(el.dataset.toggleWeek);
+      if(openWeeks.has(wnum)) openWeeks.delete(wnum); else openWeeks.add(wnum);
       wrap.classList.toggle('open');
     });
   });
@@ -706,6 +711,7 @@ function attachHandlers(){
     el.addEventListener('click', (e)=>{
       e.stopPropagation();
       const key = el.dataset.toggleDay;
+      if(openExplanations.has(key)) openExplanations.delete(key); else openExplanations.add(key);
       document.getElementById('exp-'+key).classList.toggle('open');
     });
   });
@@ -713,6 +719,7 @@ function attachHandlers(){
     el.addEventListener('click', (e)=>{
       e.stopPropagation();
       const key = el.dataset.toggleDlg;
+      if(openDialogues.has(key)) openDialogues.delete(key); else openDialogues.add(key);
       document.getElementById('dlg-'+key).classList.toggle('open');
     });
   });
