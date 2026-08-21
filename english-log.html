@@ -303,6 +303,13 @@ document.querySelectorAll('.branch-nav .branch-title').forEach(function(t){
   <div class="eyebrow"><span class="dot"></span>PROGRESS LOG · 電子維修 → 機器人整合英文對話計畫</div>
   <h1>職場英文對話 · 24週維修日誌</h1>
   <div class="subtitle">從硬體診斷背景出發，24週練到能用英文自我介紹、報告故障、講規格、談機器人整合。每天5分鐘打卡，每週五交一次「小專案」。</div>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button id="exportBtn" type="button" style="font-size:11px;padding:6px 12px;border-radius:8px;border:0.5px solid var(--border);background:var(--card-2);color:var(--text-primary);cursor:pointer;">📤 匯出備份</button>
+    <label style="font-size:11px;padding:6px 12px;border-radius:8px;border:0.5px solid var(--border);background:var(--card-2);color:var(--text-primary);cursor:pointer;">
+      📥 匯入備份
+      <input id="importInput" type="file" accept="application/json" style="display:none;">
+    </label>
+  </div>
 </div>
 
 <div class="warn">
@@ -480,18 +487,46 @@ const WEEKS = [
 {num:24, stage:4, milestone:true, title:"Week 24【總里程碑】完整模擬面試", purpose:"整個計畫的畢業考，完整模擬機器人整合職位面試，涵蓋前23週所有重點句型。", goal:"錄一段完整面試問答，涵蓋前23週重點句型。", days:null},
 ];
 
-/* ---------- storage (window.storage with in-memory fallback) ---------- */
+/* ---------- storage (localStorage) ---------- */
 let STORE = {};
 let storageReady = false;
-async function loadStore(){
+function loadStore(){
   try{
-    const r = await window.storage.get('progress-and-notes', false);
-    if(r && r.value) STORE = JSON.parse(r.value);
+    const raw = localStorage.getItem('progress-and-notes');
+    if(raw) STORE = JSON.parse(raw);
   }catch(e){ /* no saved state yet, or storage unavailable */ }
   storageReady = true;
 }
-async function saveStore(){
-  try{ await window.storage.set('progress-and-notes', JSON.stringify(STORE), false); }catch(e){ /* in-memory only this session */ }
+function saveStore(){
+  try{ localStorage.setItem('progress-and-notes', JSON.stringify(STORE)); }catch(e){ /* storage unavailable */ }
+}
+function exportBackup(){
+  const payload = { exportedAt: new Date().toISOString(), progress: STORE };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  a.href = url;
+  a.download = `englishlog-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function importBackup(file){
+  if(!confirm("匯入後會覆蓋目前的勾選記錄，確定嗎？")) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      STORE = data.progress || data;
+      saveStore();
+      render();
+    }catch(err){
+      alert("匯入失敗，檔案格式不正確");
+    }
+  };
+  reader.readAsText(file);
 }
 function dayKey(w,i){ return 'd-'+w+'-'+i; }
 function noteKey(w){ return 'n-'+w; }
@@ -705,6 +740,13 @@ function attachHandlers(){
 
 document.getElementById('searchBox').addEventListener('input', (e)=>{
   render(e.target.value);
+});
+
+document.getElementById("exportBtn").addEventListener("click", exportBackup);
+document.getElementById("importInput").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(file) importBackup(file);
+  e.target.value = "";
 });
 
 (async function init(){

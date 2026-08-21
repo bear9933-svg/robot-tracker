@@ -246,6 +246,13 @@ document.querySelectorAll('.branch-nav .branch-title').forEach(function(t){
     <div class="sub">Week1 ~ Week80 · 進度會自動保存在瀏覽器</div>
     <div class="progress-row" id="progressRow"></div>
     <input id="searchBox" type="text" placeholder="搜尋週次關鍵字，例如：ROS2、伺服馬達、OpenCV...">
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button id="exportBtn" type="button" style="font-size:12px;padding:6px 12px;border-radius:8px;border:0.5px solid var(--border);background:var(--card-2);color:var(--text-primary);cursor:pointer;">📤 匯出備份</button>
+      <label style="font-size:12px;padding:6px 12px;border-radius:8px;border:0.5px solid var(--border);background:var(--card-2);color:var(--text-primary);cursor:pointer;">
+        📥 匯入備份
+        <input id="importInput" type="file" accept="application/json" style="display:none;">
+      </label>
+    </div>
   </header>
 
   <nav id="monthNav"></nav>
@@ -286,16 +293,46 @@ function ensureProgress(sheet, dayCount){
   return progress[sheet];
 }
 
-async function loadProgress(){
+function loadProgress(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, false);
-    if(res && res.value){ progress = JSON.parse(res.value); }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ progress = JSON.parse(raw); }
   }catch(e){ progress = {}; }
 }
 
-async function saveProgress(){
-  try{ await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false); }
+function saveProgress(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
   catch(e){ console.error("儲存進度失敗", e); }
+}
+
+function exportBackup(){
+  const payload = { exportedAt: new Date().toISOString(), progress };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  a.href = url;
+  a.download = `robotplan-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(file){
+  if(!confirm("匯入後會覆蓋目前的勾選記錄，確定嗎？")) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      progress = data.progress || data;
+      saveProgress();
+      renderAll();
+    }catch(err){
+      alert("匯入失敗，檔案格式不正確");
+    }
+  };
+  reader.readAsText(file);
 }
 
 function weekProgressRatio(week){
@@ -502,6 +539,13 @@ function renderAll(keepScroll){
 document.getElementById("searchBox").addEventListener("input", (e)=>{
   searchTerm = e.target.value;
   renderWeekGrid();
+});
+
+document.getElementById("exportBtn").addEventListener("click", exportBackup);
+document.getElementById("importInput").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(file) importBackup(file);
+  e.target.value = "";
 });
 
 (async function init(){
